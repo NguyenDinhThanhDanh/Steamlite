@@ -1,64 +1,50 @@
-version: '3'
+version: '3.1'
+
 services:
   discovery:
+    container_name: consul
     image: consul:1.9
     ports:
       - 8500:8500
 
-  service-auth:
-    image: steam/service-auth
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery
-    depends_on:
-      - discovery
+  mysql-client:
+    container_name: mysql-client
+    image: mysql:8.0
+    restart: always
 
-  gateway:
-    image: steam/gateway
+    command: --default-authentication-plugin=mysql_native_password
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_LOGIN: "root"
+
     ports:
-      - 8080:8080
+      - "3306:3306"
+
+    volumes:
+      - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./bdd/client/table.sql:/docker-entrypoint-initdb.d/table.sql
+      - ./data/mysql:/var/lib/mysql
+
+  service-client:
+    container_name: service-client
+    image: service-client:latest
+    restart: on-failure
+
+    build:
+      context: ./micro-client
+      dockerfile: Dockerfile
+
     environment:
       - JAVA_TOOL_OPTIONS=
         -DCONSUL_HOST=discovery
-    depends_on:
-      - discovery
 
-  micro-vente:
-    image: steam/micro-vente
-    restart: always
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery -DCONSUL_PORT=8500
     depends_on:
       - discovery
-      - service-auth
+      - mysql-client
 
-  micro-client:
-    image: steam/micro-social
-    restart: always
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery -DCONSUL_PORT=8500
-    depends_on:
-      - discovery
-      - service-auth
+    ports:
+      - "6868:8080"
 
-  micro-social:
-    image: steam/micro-social
-    restart: always
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery -DCONSUL_PORT=8500
-    depends_on:
-      - discovery
-      - service-auth
-
-  micro-catalogue:
-    image: steam/micro-catalogue
-    restart: always
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery -DCONSUL_PORT=8500
-    depends_on:
-      - discovery
-      - service-auth
+volumes:
+  data:
