@@ -38,4 +38,12 @@
 		</plugins>
 	</build>
 
+	<modules>
+		<module>gateway</module>
+		<module>micro-catalogue</module>
+		<module>micro-client</module>
+		<module>micro-social</module>
+		<module>micro-vente</module>
+	</modules>
+
 </project>
