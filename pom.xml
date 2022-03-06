@@ -44,6 +44,7 @@
 		<module>micro-client</module>
 		<module>micro-social</module>
 		<module>micro-vente</module>
+		<module>service-auth</module>
 	</modules>
 
 </project>
