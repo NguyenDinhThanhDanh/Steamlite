@@ -5,7 +5,7 @@ services:
     container_name: consul
     image: consul:1.9
     ports:
-      - 8500:8500
+      - "8500:8500"
 
   mysql-client:
     container_name: mysql-client
