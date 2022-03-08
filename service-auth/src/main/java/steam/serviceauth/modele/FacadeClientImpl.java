@@ -3,7 +3,9 @@ package steam.serviceauth.modele;
 import org.springframework.stereotype.Component;
 import steam.microclient.exceptions.*;
 import steam.microclient.modele.Client;
+import steam.serviceauth.dao.MysqlClient;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,21 +15,15 @@ public class FacadeClientImpl implements FacadeClient{
 
     private Map<String, Client> clients;
     private Map<String, Client> clientsConnectes;
-
-    public FacadeClientImpl() {
-        this.clients = new HashMap<>();
-        this.clientsConnectes = new HashMap<>();
+    Connection connection = MysqlClient.getConnection();
+    public FacadeClientImpl()  {
+//        this.clients = new HashMap<>();
+//        this.clientsConnectes = new HashMap<>();
     }
 
     @Override
     public void inscription(String nomClient, String mdpClient) throws PseudoDejaPrisException, MotDePasseInvalideException {
-        if (clients.containsKey(nomClient))
-            throw new PseudoDejaPrisException();
-
-        if (mdpClient.length() < 5)
-            throw new MotDePasseInvalideException();
-
-        this.clients.put(nomClient, new Client(nomClient, mdpClient));
+        String query = "INSERT INTO mysql-client() ";
     }
 
     @Override

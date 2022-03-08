@@ -28,14 +28,14 @@ Pour vérifier MySQL, après avoir lancer le *docker-compose* :
 
 1. Ouvrez un nouveau terminal
 2. Entrez les commandes suivantes : \
-   `docker exec -it mysql_projet bash`\
+   `docker exec -it mysql-client bash`\
    `mysql -u root -p projet`\
    `Enter password: root`\
    `show databases;`\
    `use projet;`\
    `show tables;`
 
-3. Les tables *UTILISATEURS* et *ABONNEMENT* sont normalement visibles.
+3. Les tables *CLIENT* et *ABONNEMENT* sont normalement visibles.
 
 #### Vérifiez MongoDB
 
