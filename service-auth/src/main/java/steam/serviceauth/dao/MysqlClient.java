@@ -13,9 +13,10 @@ import java.util.Date;
 import java.util.List;
 
 public class MysqlClient {
-    private Connection mysqlConnection;
+    private static Connection mysqlConnection;
 
     public Connection getMysqlConnection() {
+
         return mysqlConnection;
     }
 
@@ -32,19 +33,21 @@ public class MysqlClient {
         this.mysqlConnection = mysqlConnection;
     }
 
-    public static Connection getConnection() throws Exception{
-        try{
-            String drive = "com.mysql.jdbc.Driver";
-            String url = "jdbc:mysql://0.0.0.0:3306/projet";
+    public static Connection getConnection() throws Exception {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            String url = "jdbc:mysql://0.0.0.0:3306/service_client";
             String username = "root";
             String password = "root";
-            Connection connection = DriverManager.getConnection(url,username, password);
+            Connection connection = DriverManager.getConnection(url, username, password);
+            System.out.println(connection);
+            System.out.println("Connection a la base de données réussie");
             return connection;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
+            throw new Exception(e);
         }
-        return null;
     }
 
     public long createUtilisateur(String motDePasse, String pseudo,String dateInscrit) {

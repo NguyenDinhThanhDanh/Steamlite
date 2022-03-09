@@ -19,7 +19,10 @@ public class FacadeClientImpl implements FacadeClient{
 
     private Map<String, Client> clientsConnectes;
     private MysqlClient mysqlClient;
-    public FacadeClientImpl()  {
+    private static FacadeClient instance;
+    public FacadeClientImpl() throws Exception {
+        this.instance=this;
+        this.mysqlClient=new MysqlClient();
 //        this.clients = new HashMap<>();
 //        this.clientsConnectes = new HashMap<>();
     }
