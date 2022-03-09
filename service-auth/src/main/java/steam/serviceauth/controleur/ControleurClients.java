@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import steam.microclient.exceptions.*;
 import steam.serviceauth.modele.FacadeClient;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping(value = "/authent")
 public class ControleurClients {
@@ -20,7 +22,8 @@ public class ControleurClients {
     @PostMapping(value = "/inscription")
     public ResponseEntity<String> inscription(@RequestParam String pseudo, @RequestParam String mdp) {
         try {
-            this.facadeClient.inscription(pseudo,mdp);
+            this.facadeClient.inscription(pseudo,mdp, LocalDate.now());
+            System.out.println(LocalDate.now().toString());
             return ResponseEntity.ok("Le compte a bien été crée");
         } catch (PseudoDejaPrisException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Pseudo "+pseudo+" déjà pris");
