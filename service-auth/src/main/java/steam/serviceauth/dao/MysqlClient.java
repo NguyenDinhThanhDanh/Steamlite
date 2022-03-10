@@ -5,6 +5,7 @@ import steam.serviceauth.client.Client;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class MysqlClient {
 
     public MysqlClient() {
         try {
-            this.mysqlConnection = getConnection();
+            this.mysqlConnection = this.getConnection();
         }
         catch (Exception e){
 
@@ -34,10 +35,10 @@ public class MysqlClient {
     }
 
     public static Connection getConnection() throws Exception {
-        try {
 
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://0.0.0.0:3306/service_client";
+        try {
+            String drive = "com.mysql.cj.jdbc.Driver";
+            String url = "jdbc:mysql://localhost:3306/service_client";
             String username = "root";
             String password = "root";
             Connection connection = DriverManager.getConnection(url, username, password);
@@ -55,9 +56,10 @@ public class MysqlClient {
             String sql = "INSERT INTO CLIENT (pseudo,mdp,dateInscrit) values (?, ?, ?)";
             PreparedStatement st = this.mysqlConnection.prepareStatement(sql);
 
-            DateTimeFormatter f = DateTimeFormatter.ofPattern( "dd/MM/uuuu" ) ;
-            LocalDate localDate = LocalDate.parse( dateInscrit , f ) ;
-            java.sql.Date date = java.sql.Date.valueOf(localDate);
+//            DateTimeFormatter f = DateTimeFormatter.ofPattern( "YYYY-MM-DD" ) ;
+//            LocalDate localDate = LocalDate.parse( dateInscrit , f ) ;
+//            System.out.println(localDate.toString());
+            java.sql.Date date = java.sql.Date.valueOf(dateInscrit);
 
             String mdp = AES.encrypt(motDePasse, pseudo) ;
 
@@ -74,7 +76,7 @@ public class MysqlClient {
 
     }
 
-    public long deleteUtilisateur(String pseudo, String MDP) {
+    /*public long deleteUtilisateur(String pseudo, String MDP) {
         try {
             PreparedStatement deleteUser = this.mysqlConnection.prepareStatement("DELETE from CLIENT where pseudo = ? and mdp = ?");
 
@@ -88,7 +90,7 @@ public class MysqlClient {
             System.out.println(e);
             return -1;
         }
-    }
+    }*/
 
     public boolean verifUser(String pseudo, String mdp) {
         PreparedStatement pstmt1 = null;
@@ -162,10 +164,6 @@ public class MysqlClient {
         return user;
 
     }
-
-
-
-
 
     public int getUserId(String pseudo, String mdp) throws UtilisateurPasInscritException {
         ResultSet result = null;

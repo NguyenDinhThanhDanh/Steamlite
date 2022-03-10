@@ -61,4 +61,8 @@ public class FacadeClientImpl implements FacadeClient{
             throw new MauvaisTokenException();
         }
     }
+//    @Override
+//    public Client connexion(String pseudo,String mdp){
+//
+//    }
 }
