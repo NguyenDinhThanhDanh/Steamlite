@@ -28,4 +28,5 @@ let insertVente= [
         ]
     }
 ]
+//SAMPLE DOCUMENT
 //db.service_vente.insert({ _id:"1",NomJeux:"1",client:[{idClient:"2",dateAchat:"2022-01-02"},{idClient:"3",dateAchat:"2022-03-09"}] }  )
