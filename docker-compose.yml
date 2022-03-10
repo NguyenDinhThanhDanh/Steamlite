@@ -26,6 +26,20 @@ services:
       - ./bdd/client/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql:/var/lib/mysql
 
+  mongo-vente:
+    container_name: mongo-vente
+    image: mongo:latest
+    restart: always
+
+    environment:
+      MONGO_INITDB_DATABASE: mongo_vente
+
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./bdd/vente/setup-vente.js:/docker-entrypoint-initdb.d/setup-vente.js:ro
+      - ./data/mongo:/data/db
+
   service-client:
     container_name: service-client
     image: service-client:latest

@@ -1,6 +1,7 @@
 package steam.serviceauth.modele;
 
 import steam.microclient.exceptions.*;
+import steam.serviceauth.client.Client;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
 
 import java.time.LocalDate;
@@ -13,4 +14,5 @@ public interface FacadeClient {
 
     String checkToken(String token) throws MauvaisTokenException;
 
+    Client connexion(String pseudo, String mdp) throws UtilisateurPasInscritException;
 }

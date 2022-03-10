@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import steam.microclient.exceptions.*;
 import steam.serviceauth.client.Client;
+import steam.serviceauth.exception.UtilisateurPasInscritException;
 import steam.serviceauth.modele.FacadeClient;
 
+import java.net.URI;
 import java.time.LocalDate;
 
 @RestController
@@ -33,12 +35,15 @@ public class ControleurClients {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Mot de passe doit contenir au moins 5 caractères");
         }
     }
-//    @PostMapping(value="/connexion",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//    public ResponseEntity<String> connexion(@RequestParam String pseudo,@RequestParam String mdp){
-//        try{
-//            Client client= this.facadeClient;
-//        }
-//    }
+    @PostMapping(value="/connexion",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<String> connexion(@RequestParam String pseudo,@RequestParam String mdp){
+        try{
+            Client client= this.facadeClient.connexion(pseudo,mdp);
+            return ResponseEntity.created(URI.create("/connexion/" + client.getIdC())).body("L'utilisateur " + client.getPseudo() + " est connecté ");
+        }catch (UtilisateurPasInscritException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le client n'existe pas");
+        }
+    }
 
 
 }
