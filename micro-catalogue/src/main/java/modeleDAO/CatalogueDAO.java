@@ -15,7 +15,7 @@ public class CatalogueDAO implements ICatalogueDao {
     private final String PERSISTENCE_UNIT_NAME = "DatabaseCatalogue";
     private EntityManager entityManager;
 
-    public CatalogueDAO(EntityManager entityManager) {
+    public CatalogueDAO() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(this.PERSISTENCE_UNIT_NAME);
         this.entityManager =  emf.createEntityManager();
     }
