@@ -1,3 +1,3 @@
-CREATE DATABASE steamlite;
+CREATE DATABASE service_client;
 
-USE steamlite;
+USE service_client;

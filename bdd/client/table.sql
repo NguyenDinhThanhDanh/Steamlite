@@ -1,14 +1,15 @@
-﻿USE steamlite;
+﻿USE service_client;
 
 
 DROP TABLE IF EXISTS CLIENT;
 
 CREATE TABLE CLIENT(
     idC INT AUTO_INCREMENT NOT NULL,
-    nomC VARCHAR(25),
+    pseudo VARCHAR(255),
     mdp VARCHAR(255),
+    dateInscrit date,
     CONSTRAINT PK_UTILISATEUR PRIMARY KEY(idC),
-    UNIQUE(nomC)
+    UNIQUE(pseudo)
 );
 
 
