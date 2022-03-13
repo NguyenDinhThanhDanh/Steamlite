@@ -1,0 +1,15 @@
+POST http://localhost:8080/catalogue/jeu
+Content-Type: application/x-www-form-urlencoded
+
+nomJeu=Lost Ark&dateJeu=18/04/2021&nomF=Tripod Studio
+
+###
+POST http://localhost:8080/catalogue/jeu
+Content-Type: application/json
+
+{
+  "nomJeu" : "Lost Ark",
+  "dateJeu" : "18/04/2021",
+  "nomF": "Tripod Studio"
+}
+###
