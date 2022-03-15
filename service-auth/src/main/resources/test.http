@@ -6,10 +6,46 @@ client.assert(response.status === 200, "Le compte n'a pas été créé");
 });
 %}
 ###
+
+POST localhost:8081/authent/inscription?pseudo=dad&mdp=dad
+
+> {%
+client.test("Request executed successfully", function() {
+client.assert(response.status === 200, "Le compte n'a pas été créé");
+});
+%}
+###
+
 POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
 
 > {%
 client.test("Request executed successfully", function() {
 client.assert(response.status === 409);
+});
+%}
+###
+POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
+
+> {%
+client.test("Request executed successfully", function() {
+client.assert(response.status === 200, "Connection");
+});
+%}
+###
+POST localhost:8081/authent/token?pseudo=zed&mdp=zed
+
+> {%
+client.global.set("auth_token", response.headers.valueOf("auth_token"));
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Le token aurait dû être créé");
+});
+%}
+###
+GET localhost:8081/authent/token?token={{auth_token}}
+
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Le token aurait dû être valide");
 });
 %}

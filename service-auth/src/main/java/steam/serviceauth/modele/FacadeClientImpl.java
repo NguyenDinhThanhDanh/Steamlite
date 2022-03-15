@@ -53,9 +53,11 @@ public class FacadeClientImpl implements FacadeClient{
             throw new JoueurInexistantException();
 
         Client client = mysqlClient.getUserByPseudo(nomClient);
-        if (client.checkPasswordClient(mdpClient)) {
+        System.out.println(client.getMdp());
+        if (client.checkPasswordClient(client.getMdp())) {
             String idConnection = UUID.randomUUID().toString();
             this.clientsConnectes.put(idConnection,client);
+            System.out.println(idConnection);
             return idConnection;
         }
         else {
@@ -73,9 +75,10 @@ public class FacadeClientImpl implements FacadeClient{
         }
     }
     @Override
-    public Client connexion(String pseudo,String mdp) throws OperationNonAutorisee, JoueurInexistantException, UtilisateurPasInscritException {
+    public Client connexion(String pseudo,String mdp) {
         Client client = this.getClientWithPseudoAndMdp(pseudo,mdp);
-        if(mysqlClient.verifUser(client.getPseudo(),AES.decrypt(client.getMdp(),pseudo))){
+        System.out.println(client.getPseudo());
+        if(mysqlClient.verifUser(client.getPseudo(),client.getMdp())){
             if(!this.clientsConnectes.containsKey(client)){
                 this.clientsConnectes.put(pseudo,client);
             }
@@ -101,7 +104,7 @@ public class FacadeClientImpl implements FacadeClient{
     @Override
     public Client getClientWithPseudoAndMdp(String pseudo, String mdp) {
         for(Client client: this.clientInscirts){
-            if(client.getPseudo().equals(pseudo) && client.getMdp().equals(AES.encrypt(mdp,pseudo))){
+            if(client.getPseudo().equals(pseudo) && client.getMdp().equals(mdp)){
                 return client;
             }
         }
