@@ -40,26 +40,6 @@ services:
       - ./bdd/vente/setup-vente.js:/docker-entrypoint-initdb.d/setup-vente.js:ro
       - ./data/mongo:/data/db
 
-  service-client:
-    container_name: service-client
-    image: service-client:latest
-    restart: on-failure
-
-    build:
-      context: ./micro-client
-      dockerfile: Dockerfile
-
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery
-
-    depends_on:
-      - discovery
-      - mysql-client
-
-    ports:
-      - "6868:8080"
-
   mysql-catalogue:
     container_name: mysql-catalogue
     image: mysql:8.0
@@ -78,26 +58,6 @@ services:
       - ./bdd/catalogue/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql:/var/lib/
-
-  service-catalogue:
-    container_name: service-catalogue
-    image: service-catalogue:latest
-    restart: on-failure
-
-    build:
-      context: ./micro-catalogue
-      dockerfile: Dockerfile
-
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery
-
-    depends_on:
-      - discovery
-      - mysql-catalogue
-
-    ports:
-      - "8081:8081"
 
 volumes:
   data:
