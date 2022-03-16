@@ -1,19 +1,15 @@
-package Controller;
+package steam.microcatalogue.Controller;
 
-import Entities.Catalogue;
-import modeleDAO.CatalogueDAO;
+import steam.microcatalogue.Entities.Catalogue;
+import steam.microcatalogue.modeleDAO.CatalogueDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/catalogue",produces = {MediaType.APPLICATION_JSON_VALUE})

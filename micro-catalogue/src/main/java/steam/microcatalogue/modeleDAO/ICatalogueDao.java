@@ -1,6 +1,7 @@
-package modeleDAO;
+package steam.microcatalogue.modeleDAO;
 
-import Entities.Catalogue;
+import org.springframework.stereotype.Service;
+import steam.microcatalogue.Entities.Catalogue;
 
 import java.util.List;
 
