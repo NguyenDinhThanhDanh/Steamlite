@@ -4,12 +4,11 @@ namespace micro_fournisseur.Repositories
 {
     public interface IFournisseurRepository
     {
-        List<Jeu> GetAll();
-        List<Jeu> ? GetAllJeuxByFournisseur(string NomFournisseur);
-        Jeu ? GetById(string id);
-        Jeu ? GetByNom(string NomJeu);
-        void SaveJeu(Jeu jeu);
+        List<FournisseurDTO> GetAll();
+        FournisseurDTO ? GetById(string id);
+        FournisseurDTO ? GetByNom(string NomFournisseur);
+        void SaveFournisseur(Fournisseur fournisseur);
 
-        //void DeleteJeu(string id);
+        //void DeleteFournisseur(string id);
     }
 }

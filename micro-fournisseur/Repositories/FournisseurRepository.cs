@@ -1,40 +1,80 @@
 using micro_fournisseur.Models;
 using micro_fournisseur.Repositories;
-//using Mysql.Driver;
+using MySql.Data.MySqlClient;
 
 namespace micro_fournisseur.Repositories
 {
     public class FournisseurRepository : IFournisseurRepository
     {
-        //private IMongoCollection<Product> Ctx { get; set; }
+
+        private MySqlConnection mySql { get; set; }
 
         public FournisseurRepository(IConfiguration configuration)
         {
-            //MongoClient client = new MongoClient(configuration["MongoHost"]);
-            //Ctx = client.GetDatabase("Products").GetCollection<Product>("Products");
+            this.mySql = new MySqlConnection(configuration["MySQLHost"]);
         }
 
-        public List<Jeu> GetAll(){
-            return new List<Jeu>();
-        }
-        public List<Jeu> ? GetAllJeuxByFournisseur(string NomFournisseur){
-            return new List<Jeu>();
-        }
-        public Jeu ? GetById(string id){
-            return null;
-        }
-        public Jeu ? GetByNom(string NomJeu){
-            return null;
-        }
-        public void SaveJeu(Jeu jeu){
-            var entity = GetById(jeu.IdJeu);
-            if (entity == null)
+        public List<FournisseurDTO> GetAll()
+        {
+            List<FournisseurDTO> fournisseurs = new List<FournisseurDTO>();
+            mySql.Open();
+            FournisseurDTO fournisseur;
+            string sql = "SELECT * FROM FOURNISSEUR";
+            MySqlCommand cmd = new MySqlCommand(sql, mySql);
+            MySqlDataReader rdr = cmd.ExecuteReader();
+            while (rdr.Read())
             {
-                //Ctx.InsertOne(product);
-                return;
+                fournisseur = new FournisseurDTO();  // creates a new instance every iteration
+                fournisseur.IdFournisseur = rdr.GetString("idF");
+                fournisseur.NomFournisseur = rdr.GetString("nomF");
+                //fournisseur.MdpFournisseur = rdr.GetString("mdpF");
+                fournisseur.DateInscription = rdr.GetString("dateInscriptionF");
+                fournisseurs.Add(fournisseur);
             }
-            //Ctx.FindOneAndReplace(Builders<Product>.Filter.Eq("Id", product.Id), product);
+            rdr.Close();
+            return fournisseurs;
         }
-
+        public FournisseurDTO ? GetById(string id)
+        {
+            FournisseurDTO fournisseur = new FournisseurDTO();
+            Console.WriteLine(id);
+            mySql.Open();
+            string sql = "SELECT * FROM FOURNISSEUR where idF = @idFour";
+            MySqlCommand cmd = new MySqlCommand(sql, mySql);
+            cmd.Parameters.AddWithValue("@idFour", id);
+            MySqlDataReader rdr = cmd.ExecuteReader();
+            while (rdr.Read()){
+                fournisseur.IdFournisseur = rdr.GetString("idF");
+                fournisseur.NomFournisseur = rdr.GetString("nomF");
+                //fournisseur.MdpFournisseur = rdr.GetString("mdpF");
+                fournisseur.DateInscription = rdr.GetString("dateInscriptionF");
+                rdr.Close();
+                return fournisseur;
+            }
+            return null;
+        }
+        public FournisseurDTO ? GetByNom(string NomFournisseur)
+        {
+            return null;
+        }
+        public void SaveFournisseur(Fournisseur fournisseur)
+        {
+            try
+            {
+                mySql.Open();
+                string sql = "INSERT INTO FOURNISSEUR (idF, nomF, mdpF, dateInscriptionF) VALUES (@idFour, @nomFour, @mdpFour, @dateInscriptionFour)";
+                MySqlCommand cmd = new MySqlCommand(sql, mySql);
+                cmd.Parameters.AddWithValue("@idFour", cmd.LastInsertedId);
+                cmd.Parameters.AddWithValue("@nomFour", fournisseur.NomFournisseur);
+                cmd.Parameters.AddWithValue("@mdpFour", fournisseur.MdpFournisseur);
+                cmd.Parameters.AddWithValue("@dateInscriptionFour", DateTime.Now);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
     }
 }

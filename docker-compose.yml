@@ -58,7 +58,7 @@ services:
       MYSQL_ROOT_LOGIN: "root"
 
     ports:
-      - "3309:3309"
+      - "3309:3306"
 
     volumes:
       - ./bdd/fournisseur/setup.sql:/docker-entrypoint-initdb.d/setup.sql
