@@ -3,11 +3,10 @@ package steam.microcatalogue.Entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Catalogue")
 public class Catalogue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private int id;
     private String nomJeu;
     private String dateJeu;
     private String nomF;

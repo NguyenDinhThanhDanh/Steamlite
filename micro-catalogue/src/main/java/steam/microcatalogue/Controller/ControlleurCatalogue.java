@@ -1,7 +1,10 @@
 package steam.microcatalogue.Controller;
 
 import steam.microcatalogue.Entities.Catalogue;
+import steam.microcatalogue.Exception.CatalogueExisteDejaException;
 import steam.microcatalogue.Exception.CatalogueInexistantException;
+import steam.microcatalogue.Exception.CatalogueNullErrorException;
+import steam.microcatalogue.Exception.IdCatalogueUnkownException;
 import steam.microcatalogue.service.CatalogueServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +25,7 @@ public class ControlleurCatalogue {
     private final static String URI_Catalogue= "http://localhost:8080/api/auth/token";
 
     @GetMapping(value = "/jeu")
-    public ResponseEntity<Collection<Catalogue>> listeJeu(@RequestHeader String token){
+    public ResponseEntity<Collection<Catalogue>> listeJeu(){
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_PILEOUFACE+"?token="+token)).GET().build();*/
         try{
@@ -46,35 +49,58 @@ public class ControlleurCatalogue {
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
-            Object statutAjout = catalogueDAO.save(catalogue);
-            if (statutAjout.equals(1)){
-                return ResponseEntity.created(URI.create("/catalogue/jeu/" + catalogue.getId())).body(catalogue.getNomJeu() + " a été ajouté au catalogue de jeu");
-            }
-            else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("le catalogue passé est incorrect ou existe déjà");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            catalogueDAO.save(catalogue);
+            return ResponseEntity.created(URI.create("/catalogue/jeu/" + catalogue.getId())).body(catalogue.getNomJeu() + " a été ajouté au catalogue de jeu");
+        } catch (CatalogueExisteDejaException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("le catalogue passé existe déjà");
+        } catch (CatalogueNullErrorException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("le catalogue passé est incorrect");
         }
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("problème avec la requête");
     }
 
 
-    @DeleteMapping(value = "/jeu")
-    public ResponseEntity<String> deleteJeu(@RequestHeader String token, @RequestParam Integer Idcatalogue) {
+    @DeleteMapping(value = "/jeu/{id}")
+    public ResponseEntity<String> deleteJeu(@PathVariable String id) {
+        /* @RequestHeader String token
         /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try {
-            boolean statutDelete = catalogueDAO.delete(Idcatalogue);
-            if (statutDelete) {
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body("le jeu d'id" + Idcatalogue + " a été supprimé du catalogue de jeu");
-            }
+            catalogueDAO.delete(Integer.valueOf(id));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("le jeu d'id" + id + " a été supprimé du catalogue de jeu");
         } catch (CatalogueInexistantException e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("le catalogue passé est incorrect ou n'existe pas");
         }
-
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("problème avec la requête");
     }
+
+    @GetMapping(value = "/jeu/{id}")
+    public ResponseEntity<Catalogue> getJeu(@PathVariable String id){
+        /* @RequestHeader String token,
+/*      HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_PILEOUFACE+"?token="+token)).GET().build();*/
+        try{
+            Catalogue c = catalogueDAO.findById(Integer.valueOf(id));
+            ResponseEntity<Catalogue> responseEntity = ResponseEntity.ok(c);
+            return responseEntity;
+        } catch (IdCatalogueUnkownException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @PutMapping(value = "/jeu/modifier/{id}")
+    public ResponseEntity<String> updateJeu(@RequestBody Catalogue catalogue, @PathVariable String id){
+/*      HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
+        try{
+            catalogueDAO.update(catalogue, Integer.valueOf(id));
+            return ResponseEntity.created(URI.create("/catalogue/jeu/" + catalogue.getId())).body(catalogue.getNomJeu() + " a été ajouté au catalogue de jeu");
+        } catch (CatalogueNullErrorException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("le catalogue n'existe pas");
+        } catch (CatalogueInexistantException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
 }
 

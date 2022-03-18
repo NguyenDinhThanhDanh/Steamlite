@@ -24,7 +24,7 @@ services:
     volumes:
       - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./bdd/client/table.sql:/docker-entrypoint-initdb.d/table.sql
-      - ./data/mysql:/var/lib/mysql
+      - ./data/mysql/client:/var/lib/mysql
 
   mongo-vente:
     container_name: mongo-vente
@@ -38,7 +38,7 @@ services:
       - "27017:27017"
     volumes:
       - ./bdd/vente/setup-vente.js:/docker-entrypoint-initdb.d/setup-vente.js:ro
-      - ./data/mongo:/data/db
+      - ./data/mongo/vente:/data/db
 
   mysql-catalogue:
     container_name: mysql-catalogue
@@ -52,12 +52,12 @@ services:
       MYSQL_ROOT_LOGIN: "root"
 
     ports:
-      - "3307:3307"
+      - "3307:3306"
 
     volumes:
       - ./bdd/catalogue/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
-      - ./data/mysql:/var/lib/
+      - ./data/mysql/catalogue:/var/lib/
 
 volumes:
   data:
