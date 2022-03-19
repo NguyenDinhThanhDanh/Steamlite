@@ -1,13 +1,18 @@
 package steam.microsocial.Entities;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Document(collection = "Social")
 public class Social {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int idSocial;
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int idChat;
     private int idJoueur1;
     private int idJoueur2;
