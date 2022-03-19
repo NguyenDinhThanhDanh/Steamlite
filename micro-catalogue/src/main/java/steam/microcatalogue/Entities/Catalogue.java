@@ -7,6 +7,7 @@ public class Catalogue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(unique=true)
     private String nomJeu;
     private String dateJeu;
     private String nomF;

@@ -61,10 +61,10 @@ public class MysqlClient {
 //            System.out.println(localDate.toString());
             java.sql.Date date = java.sql.Date.valueOf(dateInscrit);
 
-            String mdp = AES.encrypt(motDePasse, pseudo) ;
+
 
             st.setString(1, pseudo);
-            st.setString(2, mdp);
+            st.setString(2, motDePasse);
             st.setDate(3, date);
             st.executeUpdate();
             return 1;
@@ -96,7 +96,7 @@ public class MysqlClient {
         PreparedStatement pstmt1 = null;
         ResultSet rs = null;
 
-        mdp = AES.encrypt(mdp, pseudo);
+
 
         try {
             String queryUser = "SELECT pseudo, mdp FROM CLIENT where pseudo=? and mdp=?";
@@ -122,7 +122,7 @@ public class MysqlClient {
         PreparedStatement pstmt1 = null;
         ResultSet rs = null;
         try {
-            String queryUser = "SELECT * FROM Client";
+            String queryUser = "SELECT * FROM CLIENT";
             pstmt1 = this.mysqlConnection.prepareStatement(queryUser);
             rs = pstmt1.executeQuery();
             while( rs.next()){
@@ -151,7 +151,7 @@ public class MysqlClient {
             result = requeteUtilisateur.executeQuery();
             while( result.next()) {
                 String pseudo = result.getString(2);
-                String motDePasse = AES.decrypt(result.getString(3),pseudo);
+                String motDePasse = result.getString(3);
                 String dateInscrit = result.getString(4);
                 user = new Client(pseudo, motDePasse,dateInscrit);
                 user.setIdC(idUser);
@@ -169,7 +169,7 @@ public class MysqlClient {
         ResultSet result = null;
         try{
             PreparedStatement getId = this.mysqlConnection.prepareStatement("SELECT idC FROM Client where pseudo = ? and mdp = ?");
-            mdp = AES.encrypt(mdp, pseudo) ;
+
             getId.setString(1, pseudo);
             getId.setString(2, mdp);
 
@@ -191,12 +191,12 @@ public class MysqlClient {
         ResultSet result = null;
         Client user=null;
         try {
-            PreparedStatement requeteUtilisateur = this.mysqlConnection.prepareStatement("SELECT * FROM UTILISATEUR where pseudo = ?");
+            PreparedStatement requeteUtilisateur = this.mysqlConnection.prepareStatement("SELECT * FROM CLIENT where pseudo = ?");
             requeteUtilisateur.setString(1,pseudo);
 
             result = requeteUtilisateur.executeQuery();
             while( result.next()) {
-                String motDePasse = AES.decrypt(result.getString(2),pseudo);
+                String motDePasse =     result.getString(2);
                 String dateInscrit = result.getString(4);
                 user = new Client(pseudo, motDePasse,dateInscrit);
                 user.setIdC(result.getInt(1));

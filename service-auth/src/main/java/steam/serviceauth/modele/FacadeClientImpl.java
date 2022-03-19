@@ -3,12 +3,15 @@ package steam.serviceauth.modele;
 import org.springframework.stereotype.Component;
 import steam.microclient.exceptions.*;
 
+import steam.serviceauth.client.AES;
 import steam.serviceauth.client.Client;
 import steam.serviceauth.dao.MysqlClient;
+import steam.serviceauth.exception.ClientInexistantException;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -17,14 +20,22 @@ import java.util.UUID;
 public class FacadeClientImpl implements FacadeClient{
 
 
-    private Map<String, Client> clientsConnectes;
+    private HashMap<String,Client> clientsConnectes;
     private MysqlClient mysqlClient;
+    private Collection<Client> clientInscirts;
     private static FacadeClient instance;
     public FacadeClientImpl() throws Exception {
         this.instance=this;
         this.mysqlClient=new MysqlClient();
-//        this.clients = new HashMap<>();
-//        this.clientsConnectes = new HashMap<>();
+        this.clientsConnectes = new HashMap<>();
+        this.clientInscirts = this.mysqlClient.getAllUsers();
+
+    }
+    public static FacadeClient getInstance() throws Exception {
+        if(instance==null){
+            instance=new FacadeClientImpl();
+        }
+        return instance;
     }
 
     @Override
@@ -42,9 +53,11 @@ public class FacadeClientImpl implements FacadeClient{
             throw new JoueurInexistantException();
 
         Client client = mysqlClient.getUserByPseudo(nomClient);
-        if (client.checkPasswordClient(mdpClient)) {
+        System.out.println(client.getMdp());
+        if (client.checkPasswordClient(client.getMdp())) {
             String idConnection = UUID.randomUUID().toString();
-            this.clientsConnectes.put(idConnection, client);
+            this.clientsConnectes.put(idConnection,client);
+            System.out.println(idConnection);
             return idConnection;
         }
         else {
@@ -62,7 +75,44 @@ public class FacadeClientImpl implements FacadeClient{
         }
     }
     @Override
-    public Client connexion(String pseudo,String mdp){
+    public Client connexion(String pseudo,String mdp) {
+        Client client = this.getClientWithPseudoAndMdp(pseudo,mdp);
+        System.out.println(client.getPseudo());
+        if(mysqlClient.verifUser(client.getPseudo(),client.getMdp())){
+            if(!this.clientsConnectes.containsKey(client)){
+                this.clientsConnectes.put(pseudo,client);
+            }
+        }
+        return client;
+    }
+
+    @Override
+    public void deconnexion(Client client) throws ClientInexistantException, OperationNonAutorisee {
+        if(this.mysqlClient.verifUser(client.getPseudo(),client.getMdp())){
+            if(!clientsConnectes.containsKey(client.getPseudo()))
+                throw new ClientInexistantException();
+                this.clientsConnectes.remove(client.getPseudo());
+            }
+        else{
+            throw new OperationNonAutorisee();
+        }
+
+    }
+
+
+
+    @Override
+    public Client getClientWithPseudoAndMdp(String pseudo, String mdp) {
+        for(Client client: this.clientInscirts){
+            if(client.getPseudo().equals(pseudo) && client.getMdp().equals(mdp)){
+                return client;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public Client getClientById(int idC) {
+        return mysqlClient.getUserById(idC);
     }
 }
