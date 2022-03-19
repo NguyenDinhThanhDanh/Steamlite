@@ -1,5 +1,6 @@
 using micro_fournisseur.Models;
 using micro_fournisseur.Services;
+using micro_fournisseur.Exceptions;
 using micro_fournisseur.Repositories;
 
 namespace micro_fournisseur.Services
@@ -17,9 +18,8 @@ namespace micro_fournisseur.Services
             JeuRepository = jeuRepository;
         }
 
-        public Fournisseur InscrireFournisseur(Fournisseur fournisseur){
-            FournisseurRepository.SaveFournisseur(fournisseur);
-            return fournisseur;
+        public int InscrireFournisseur(Fournisseur fournisseur){
+            return FournisseurRepository.SaveFournisseur(fournisseur);
         }
 
         public void ConnexionFournisseur(string NomFournisseur, string MdpFournisseur){
@@ -47,6 +47,11 @@ namespace micro_fournisseur.Services
         public FournisseurDTO ? GetFournisseurById(string id)
         {
             return FournisseurRepository.GetById(id);
+        }
+
+        public FournisseurDTO ? GetFournisseurByNom(string nomF)
+        {
+            return FournisseurRepository.GetByNom(nomF);
         }
 
         public Jeu ? GetJeuById(string id)

@@ -5,7 +5,7 @@ using micro_fournisseur.Exceptions;
 
 namespace micro_fournisseur.Controllers
 {
-    [Route("api/fournisseur/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class FournisseurController : ControllerBase
     {
@@ -27,15 +27,26 @@ namespace micro_fournisseur.Controllers
 
             return Ok();
         }
-        [HttpGet("~/fournisseur/{id}", Name = "GetFournisseur")]
-        public IActionResult GetFournisseur(string id)
+
+        [HttpGet("~/fournisseurById/{id}", Name = "GetFournisseurById")]
+        public IActionResult GetFournisseurById(string id)
         {
             FournisseurDTO fournisseur = FournisseurService.GetFournisseurById(id);
             if (fournisseur == null)
             {
                 return NotFound();
             }
+            return Ok(fournisseur);
+        }
 
+        [HttpGet("~/fournisseurByName/{nomF}", Name = "GetFournisseurByNom")]
+        public IActionResult GetFournisseurByNom(string nomF)
+        {
+            FournisseurDTO fournisseur = FournisseurService.GetFournisseurByNom(nomF);
+            if (fournisseur == null)
+            {
+                return NotFound();
+            }
             return Ok(fournisseur);
         }
 
@@ -52,12 +63,15 @@ namespace micro_fournisseur.Controllers
         public IActionResult Inscription([FromBody] Fournisseur fournisseur)
         {
             var result = FournisseurService.InscrireFournisseur(fournisseur);
-            //Console.WriteLine(result.ToString());
-            return Created(Url.RouteUrl("GetFournisseur", new { id = result.IdFournisseur }), result);
+            if(result == -1)
+            {
+                return StatusCode(409, "Already exists");
+            }
+            return Ok();
         }
 
         // POST fournisseur/
-        [HttpPost("~/fournisseurs")]
+        [HttpGet("~/fournisseurs")]
         public List<FournisseurDTO> GetAllFournisseurs()
         {
             return FournisseurService.GetFournisseurs();
