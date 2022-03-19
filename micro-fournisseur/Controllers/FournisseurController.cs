@@ -16,7 +16,7 @@ namespace micro_fournisseur.Controllers
             FournisseurService = fournisseurService;
         }
 
-        [HttpGet("~/jeu/{id}", Name = "GetJeu")]
+        [HttpGet("~/jeu/{id}")]
         public IActionResult GetJeu(string id)
         {
             //var product = FournisseurService.G(id);
@@ -26,6 +26,41 @@ namespace micro_fournisseur.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet("~/jeuById/{id}", Name = "GetJeuById")]
+        public IActionResult GetJeuById(string id)
+        {
+            //var product = FournisseurService.G(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("~/jeuByName/{nameJ}", Name = "GetJeuByName")]
+        public IActionResult GetJeuByName(string id)
+        {
+            //var product = FournisseurService.G(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("~/fournisseur/{id}")]
+        public IActionResult GetFournisseur(string id)
+        {
+            FournisseurDTO fournisseur = FournisseurService.GetFournisseurById(id);
+            if (fournisseur == null)
+            {
+                return NotFound();
+            }
+            return Ok(fournisseur);
         }
 
         [HttpGet("~/fournisseurById/{id}", Name = "GetFournisseurById")]
@@ -55,7 +90,7 @@ namespace micro_fournisseur.Controllers
         public IActionResult AjouterJeu([FromBody] Jeu jeu)
         {
             var result = FournisseurService.AjouterJeu(jeu);
-            return Created(Url.RouteUrl("GetJeu", new { id = result.IdJeu }), result);
+            return Created(Url.RouteUrl("GetJeuById", new { id = result.IdJeu }), result);
         }
 
         // POST fournisseur/inscription/
@@ -70,7 +105,7 @@ namespace micro_fournisseur.Controllers
             return Ok();
         }
 
-        // POST fournisseur/
+        // Get fournisseurs/
         [HttpGet("~/fournisseurs")]
         public List<FournisseurDTO> GetAllFournisseurs()
         {
