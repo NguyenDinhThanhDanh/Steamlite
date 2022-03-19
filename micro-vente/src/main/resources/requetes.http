@@ -1,14 +1,13 @@
-GET http://localhost:8080/vente
+GET http://localhost:8080/vente/ventes
 
 ###
 POST http://localhost:8080/vente/vente
 Content-Type: application/json
 
 {
-  "idJeu" : "1",
-  "idClient" : "1",
-  "idVente": "1",
-  "dateVente": "18/04/2022"
+  "idJeu" : "5",
+  "idClient" : 1,
+  "dateAchat": "19/04/2022"
 }
 
 ###

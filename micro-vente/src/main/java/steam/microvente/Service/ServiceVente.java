@@ -1,5 +1,6 @@
 package steam.microvente.Service;
 
+import steam.microvente.Entities.Achat;
 import steam.microvente.Entities.Vente;
 import steam.microvente.Exception.IdClientUnknownException;
 import steam.microvente.Exception.IdGameUnkownException;
@@ -8,7 +9,7 @@ import java.util.Collection;
 
 public interface ServiceVente {
 
-    void buyGame(Vente vente) throws IdGameUnkownException, IdClientUnknownException;
+    void buyGame(Achat achat) throws IdGameUnkownException, IdClientUnknownException;
     Collection<Vente> getVentesByGameId(Integer id);
     Collection<Vente> getVentesByGameName(String name);
     Collection<Vente> getVentesByClientId(Integer id);

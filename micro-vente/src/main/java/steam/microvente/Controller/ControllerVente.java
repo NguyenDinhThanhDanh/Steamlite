@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import steam.microvente.Entities.Achat;
 import steam.microvente.Entities.Vente;
 import steam.microvente.Exception.*;
 import steam.microvente.Service.ServiceVente;
@@ -22,8 +23,8 @@ public class ControllerVente {
 
     private final static String URI_vente= "http://localhost:8080/api/auth/token";
 
-    @GetMapping(value = "/vente")
-    public ResponseEntity<Collection<Vente>> listeVent(){
+    @GetMapping(value = "/ventes")
+    public ResponseEntity<Collection<Vente>> listeVentes(){
         try{
             Collection<Vente> listeAllVente = serviceVente.getAllVentes();
             if (listeAllVente.size() == 0){
@@ -40,15 +41,14 @@ public class ControllerVente {
     }
 
     @PostMapping(value = "/vente")
-    public ResponseEntity<String> addJeu(@RequestBody Vente vente){
+    public ResponseEntity<String> addJeu(@RequestBody Achat achat){
         try{
-            serviceVente.buyGame(vente);
-            return ResponseEntity.created(URI.create("/vente/jeu/" + vente.getIdJeu())).body(vente.getIdClient() + " a achété le jeu");
+            serviceVente.buyGame(achat);
+            return ResponseEntity.created(URI.create("/vente/jeu/" + achat.getIdJeu())).body(achat.getIdClient() + " a achété le jeu " + achat.getIdJeu());
         } catch (IdGameUnkownException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Id du jeu inconnu");
         } catch (IdClientUnknownException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id de client inconnu");
         }
     }
-
 }

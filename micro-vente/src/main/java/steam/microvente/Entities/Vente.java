@@ -3,51 +3,35 @@ package steam.microvente.Entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 
 @Document(collection = "ventes")
 public class Vente {
 
     @Id
     private int idJeu;
-    private int idClient;
-    private int idVente;
-    private String dateAchat;
+    private List<Achat> listeAchats;
 
-    public Vente(int idJeu, int idClient, String dateAchat) {
+    public Vente(int idJeu, List<Achat> listeAchats) {
         this.idJeu = idJeu;
-        this.idClient = idClient;
-        this.dateAchat = dateAchat;
+        this.listeAchats = listeAchats;
     }
 
-    public int getIdVente() {
-        return idVente;
+    public List<Achat> getListeAchats() {
+        return listeAchats;
     }
 
-    public int getIdClient() {
-        return idClient;
+    public void setListeAchats(List<Achat> listeAchats) {
+        this.listeAchats = listeAchats;
     }
 
     public int getIdJeu() {
         return idJeu;
     }
 
-    public String getDateAchat() {
-        return dateAchat;
-    }
-
-    public void setIdClient(int idClient) {
-        this.idClient = idClient;
-    }
-
     public void setIdJeu(int idJeu) {
         this.idJeu = idJeu;
     }
 
-    public void setDateAchat(String dateAchat) {
-        this.dateAchat = dateAchat;
-    }
-
-    public void setIdVente(int idVente) {
-        this.idVente = idVente;
-    }
 }
