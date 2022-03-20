@@ -3,6 +3,7 @@ package steam.microvente.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import steam.microvente.Entities.Achat;
+import steam.microvente.Entities.Bibliotheque;
 import steam.microvente.Entities.Vente;
 import steam.microvente.Exception.GameAlreadyOwnedException;
 import steam.microvente.Exception.IdClientUnknownException;
@@ -25,7 +26,7 @@ public class ServiceVenteImpl implements ServiceVente{
     private VenteRepositoryCustom venteRepositoryCustom;
 
     @Autowired
-    private BibliothequeRepository achatRepository;
+    private BibliothequeRepository bibliothequeRepository;
 
     public ServiceVenteImpl() {
 
@@ -58,11 +59,11 @@ public class ServiceVenteImpl implements ServiceVente{
 
 
     @Override
-    public Collection<Vente> getVentesByClientId(int id) throws IdClientUnknownException {
-//        if(!venteRepository.existsById(id)){
-//            throw new IdClientUnknownException();
-//        }
-        return venteRepository.findVenteByIdClient(id);
+    public Collection<Bibliotheque> getVentesByClientId(int id) throws IdClientUnknownException {
+        if(!bibliothequeRepository.existsById(id)){
+            throw new IdClientUnknownException();
+        }
+        return bibliothequeRepository.findById(id).stream().collect(Collectors.toList());
     }
 
     @Override

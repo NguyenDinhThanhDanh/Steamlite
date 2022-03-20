@@ -15,6 +15,6 @@ Content-Type: application/json
 GET http://localhost:8080/vente/jeu/7
 
 ###
-GET http://localhost:8080/vente/client/2
+GET http://localhost:8080/vente/client/3
 
 ###

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import steam.microvente.Entities.Achat;
+import steam.microvente.Entities.Bibliotheque;
 import steam.microvente.Entities.Vente;
 import steam.microvente.Exception.*;
 import steam.microvente.Service.ServiceVente;
@@ -56,13 +57,13 @@ public class ControllerVente {
     }
 
     @GetMapping(value = "/client/{id}")
-    public ResponseEntity<Collection<Vente>> listeVentesPourClient(@PathVariable String id) throws IdClientUnknownException {
-        Collection<Vente> listeAllVente = serviceVente.getVentesByClientId(Integer.valueOf(id));
+    public ResponseEntity<Collection<Bibliotheque>> listeVentesPourClient(@PathVariable String id) throws IdClientUnknownException {
+        Collection<Bibliotheque> listeAllVente = serviceVente.getVentesByClientId(Integer.valueOf(id));
         if (listeAllVente.size() == 0){
             return ResponseEntity.noContent().build();
         }
         else{
-            ResponseEntity<Collection<Vente>> responseEntity = ResponseEntity.ok(listeAllVente);
+            ResponseEntity<Collection<Bibliotheque>> responseEntity = ResponseEntity.ok(listeAllVente);
             return responseEntity;
         }
     }
