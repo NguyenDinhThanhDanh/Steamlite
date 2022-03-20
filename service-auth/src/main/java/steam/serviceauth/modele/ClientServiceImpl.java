@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import steam.microclient.exceptions.JoueurInexistantException;
 import steam.microclient.exceptions.MauvaisTokenException;
 import steam.microclient.exceptions.OperationNonAutorisee;
+import steam.microclient.exceptions.PseudoDejaPrisException;
 import steam.serviceauth.client.Client;
 import steam.serviceauth.dao.ClientRepository;
+import steam.serviceauth.exception.ClientDejaConnecte;
 import steam.serviceauth.exception.ClientInexistantException;
 import steam.serviceauth.exception.IdClientUnknownException;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
@@ -26,11 +28,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void createUtilisateur(String mdp, String pseudo, String dateInscrit) {
+    public void createUtilisateur(String mdp, String pseudo, String dateInscrit) throws PseudoDejaPrisException {
         Client client= new Client(pseudo, mdp, dateInscrit);
-        if(Objects.nonNull(client)){
+        if(this.verifUser(pseudo,mdp)){
+            throw new PseudoDejaPrisException();
+        }
+        else if(Objects.nonNull(client)){
             clientRepository.save(client);
         }
+
     }
 
     @Override
@@ -92,9 +98,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
-    public Client connexion(String pseudo, String mdp) {
+    public Client connexion(String pseudo, String mdp) throws ClientDejaConnecte, UtilisateurPasInscritException {
         Client client = clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp);
-
+        if(!this.verifUser(pseudo,mdp)){
+            throw new UtilisateurPasInscritException();
+        }
+        if(clientsConnectes.containsKey(pseudo)) throw new ClientDejaConnecte();
         if(this.verifUser(client.getPseudo(),client.getMdp())){
             if(!this.clientsConnectes.containsKey(client)){
                 this.clientsConnectes.put(pseudo,client);

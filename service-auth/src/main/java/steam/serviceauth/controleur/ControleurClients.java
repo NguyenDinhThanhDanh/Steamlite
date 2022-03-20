@@ -2,15 +2,14 @@ package steam.serviceauth.controleur;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import steam.microclient.exceptions.*;
 import steam.serviceauth.client.Client;
+import steam.serviceauth.exception.ClientDejaConnecte;
 import steam.serviceauth.exception.ClientInexistantException;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
 import steam.serviceauth.modele.ClientServiceImpl;
-//import steam.serviceauth.modele.FacadeClient;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -24,13 +23,23 @@ public class ControleurClients {
 
     @PostMapping(value = "/inscription")
     public ResponseEntity<String> inscription(@RequestParam String pseudo, @RequestParam String mdp) {
-            this.clientService.createUtilisateur(mdp,pseudo,LocalDate.now().toString());
+        try {
+            this.clientService.createUtilisateur(mdp, pseudo, LocalDate.now().toString());
             return ResponseEntity.ok("Le compte a bien été crée");
+        }catch (PseudoDejaPrisException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Pseudo"+pseudo+"deja pris");
+        }
     }
     @PostMapping(value="/connexion")
     public ResponseEntity<String> connexion(@RequestParam String pseudo,@RequestParam String mdp){
-        Client client= this.clientService.connexion(pseudo,mdp);
-        return ResponseEntity.ok("L'utilisateur " + client.getPseudo() + " est connecté ");
+        try {
+            Client client = this.clientService.connexion(pseudo, mdp);
+            return ResponseEntity.ok("L'utilisateur " + client.getPseudo() + " est connecté ");
+        }catch (ClientDejaConnecte e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Client" +pseudo+ "deja connecte");
+        }catch (UtilisateurPasInscritException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client "+pseudo+ " n'existe pas dans steam");
+        }
     }
     @PostMapping(value="/{idC}/deconnexion")
     public ResponseEntity<String> deconnexion(@PathVariable int idC){
