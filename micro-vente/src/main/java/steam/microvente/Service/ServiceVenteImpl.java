@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import steam.microvente.Entities.Achat;
 import steam.microvente.Entities.Vente;
+import steam.microvente.Exception.GameAlreadyOwnedException;
 import steam.microvente.Exception.IdClientUnknownException;
 import steam.microvente.Exception.IdGameUnkownException;
+import steam.microvente.Repository.BibliothequeRepository;
 import steam.microvente.Repository.VenteRepository;
 import steam.microvente.Repository.VenteRepositoryCustom;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -23,40 +24,45 @@ public class ServiceVenteImpl implements ServiceVente{
     @Autowired
     private VenteRepositoryCustom venteRepositoryCustom;
 
+    @Autowired
+    private BibliothequeRepository achatRepository;
+
     public ServiceVenteImpl() {
 
     }
 
     @Override
-    public void buyGame(Achat achat) throws IdGameUnkownException, IdClientUnknownException {
-//        if(!venteRepository.existsById(vente.getIdJeu())){
+    public void buyGame(Achat achat) throws IdGameUnkownException, IdClientUnknownException, GameAlreadyOwnedException {
+//        if(!venteRepository.existsById(achat.getIdJeu())){
 //            throw new IdGameUnkownException();
 //        }
-//        if(!venteRepository.existsById(vente.getIdClient())){
+//        if(!venteRepository.existsById(achat.getIdClient())){
 //            throw new IdClientUnknownException();
 //        }
-        venteRepositoryCustom.save(achat);
-        //venteRepository.save(achat);
+        try {
+            venteRepositoryCustom.save(achat);
+        }
+        catch (GameAlreadyOwnedException e){
+            throw new GameAlreadyOwnedException();
+        }
+
     }
 
     @Override
-    public Collection<Vente> getVentesByGameId(Integer id) {
-        return null;
+    public Collection<Vente> getVentesByGameId(int id) throws IdGameUnkownException {
+        if(!venteRepository.existsById(id)){
+            throw new IdGameUnkownException();
+        }
+        return venteRepository.findById(id).stream().collect(Collectors.toList());
     }
 
-    @Override
-    public Collection<Vente> getVentesByGameName(String name) {
-        return null;
-    }
 
     @Override
-    public Collection<Vente> getVentesByClientId(Integer id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Vente> getVentesByClientName(String name) {
-        return null;
+    public Collection<Vente> getVentesByClientId(int id) throws IdClientUnknownException {
+//        if(!venteRepository.existsById(id)){
+//            throw new IdClientUnknownException();
+//        }
+        return venteRepository.findVenteByIdClient(id);
     }
 
     @Override

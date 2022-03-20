@@ -8,14 +8,25 @@ import java.util.List;
 
 public class Achat {
 
-    private int idJeu;
+    @Id
     private int idClient;
+    private int idJeu;
+    private double prixAchat;
     private String dateAchat;
 
-    public Achat(int idJeu, int idClient, String dateAchat) {
+    public Achat(int idJeu, int idClient, double prixAchat, String dateAchat) {
         this.idJeu = idJeu;
         this.idClient = idClient;
+        this.prixAchat = prixAchat;
         this.dateAchat = dateAchat;
+    }
+
+    public double getPrixAchat() {
+        return prixAchat;
+    }
+
+    public void setPrixAchat(double prixAchat) {
+        this.prixAchat = prixAchat;
     }
 
     public int getIdClient() {
