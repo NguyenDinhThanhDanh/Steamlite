@@ -1,6 +1,17 @@
 package steam.serviceauth.client;
 
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Client {
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int idC;
     private String pseudo;
     private String mdp;

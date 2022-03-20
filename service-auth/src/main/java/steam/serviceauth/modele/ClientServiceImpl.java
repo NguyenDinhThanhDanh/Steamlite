@@ -1,0 +1,124 @@
+package steam.serviceauth.modele;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import steam.microclient.exceptions.JoueurInexistantException;
+import steam.microclient.exceptions.MauvaisTokenException;
+import steam.microclient.exceptions.OperationNonAutorisee;
+import steam.serviceauth.client.Client;
+import steam.serviceauth.dao.ClientRepository;
+import steam.serviceauth.exception.ClientInexistantException;
+import steam.serviceauth.exception.IdClientUnknownException;
+import steam.serviceauth.exception.UtilisateurPasInscritException;
+
+import java.util.*;
+
+@Service
+public class ClientServiceImpl implements ClientService {
+
+       @Autowired
+   private ClientRepository clientRepository;
+
+       private HashMap<String,Client> clientsConnectes;
+
+    public ClientServiceImpl(){
+        this.clientsConnectes= new HashMap<>();
+    }
+
+    @Override
+    public void createUtilisateur(String mdp, String pseudo, String dateInscrit) {
+        Client client= new Client(pseudo, mdp, dateInscrit);
+        if(Objects.nonNull(client)){
+            clientRepository.save(client);
+        }
+    }
+
+    @Override
+    public boolean verifUser(String pseudo, String mdp) {
+       if(clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp)==null){
+           return false;
+       }else{
+           return true;
+       }
+    }
+
+    @Override
+    public Collection<Client> getAllUser() {
+        Collection<Client> clients= new ArrayList<>();
+        clientRepository.findAll().forEach(clients::add);
+        return clients;
+    }
+
+    @Override
+    public Client getUserById(int idUser) throws IdClientUnknownException {
+        if(!clientRepository.existsById(idUser)){
+            throw new IdClientUnknownException();
+        }
+        Client client =  this.clientRepository.findById(idUser).get();
+        return client;
+    }
+
+    @Override
+    public Client getUserByPseudo(String pseudo) {
+        return clientRepository.findClientByPseudo(pseudo);
+    }
+
+    @Override
+    public String genererToken(String nomClient, String mdpClient) throws JoueurInexistantException, OperationNonAutorisee, UtilisateurPasInscritException {
+        if (!this.verifUser(nomClient,mdpClient))
+            throw new JoueurInexistantException();
+
+        Client client = this.getUserByPseudo(nomClient);
+        System.out.println(client.getMdp());
+        if (client.checkPasswordClient(client.getMdp())) {
+            String idConnection = UUID.randomUUID().toString();
+            this.clientsConnectes.put(idConnection,client);
+            System.out.println(idConnection);
+            return idConnection;
+        }
+        else {
+            throw new OperationNonAutorisee();
+        }
+    }
+
+    @Override
+    public String checkToken(String token) throws MauvaisTokenException {
+        if (clientsConnectes.containsKey(token)){
+            return clientsConnectes.get(token).getPseudo();
+        }
+        else {
+            throw new MauvaisTokenException();
+        }
+    }
+
+
+    public Client connexion(String pseudo, String mdp) {
+        Client client = clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp);
+
+        if(this.verifUser(client.getPseudo(),client.getMdp())){
+            if(!this.clientsConnectes.containsKey(client)){
+                this.clientsConnectes.put(pseudo,client);
+            }
+        }
+        return client;
+    }
+
+    @Override
+    public void deconnexion(Client client) throws ClientInexistantException, OperationNonAutorisee {
+        if(this.verifUser(client.getPseudo(),client.getMdp())){
+            if(!clientsConnectes.containsKey(client.getPseudo()))
+                throw new ClientInexistantException();
+            this.clientsConnectes.remove(client.getPseudo());
+        }
+        else{
+            throw new OperationNonAutorisee();
+        }
+
+    }
+
+    @Override
+    public Client getClientById(int idC) {
+        return this.clientRepository.findById(idC).get();
+
+    }
+}

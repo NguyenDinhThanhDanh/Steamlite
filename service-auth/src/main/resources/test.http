@@ -15,15 +15,6 @@ client.assert(response.status === 200, "Le compte n'a pas été créé");
 });
 %}
 ###
-
-POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
-
-> {%
-client.test("Request executed successfully", function() {
-client.assert(response.status === 409);
-});
-%}
-###
 POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
 
 > {%

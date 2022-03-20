@@ -23,7 +23,6 @@ services:
 
     volumes:
       - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./bdd/client/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql:/var/lib/mysql
 
   mongo-vente:

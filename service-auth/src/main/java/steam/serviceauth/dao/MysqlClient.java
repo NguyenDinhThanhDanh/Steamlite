@@ -1,17 +1,10 @@
 package steam.serviceauth.dao;
-import jdk.jshell.execution.Util;
-import steam.serviceauth.client.AES;
 import steam.serviceauth.client.Client;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 public class MysqlClient {
     private static Connection mysqlConnection;
@@ -56,9 +49,6 @@ public class MysqlClient {
             String sql = "INSERT INTO CLIENT (pseudo,mdp,dateInscrit) values (?, ?, ?)";
             PreparedStatement st = this.mysqlConnection.prepareStatement(sql);
 
-//            DateTimeFormatter f = DateTimeFormatter.ofPattern( "YYYY-MM-DD" ) ;
-//            LocalDate localDate = LocalDate.parse( dateInscrit , f ) ;
-//            System.out.println(localDate.toString());
             java.sql.Date date = java.sql.Date.valueOf(dateInscrit);
 
 

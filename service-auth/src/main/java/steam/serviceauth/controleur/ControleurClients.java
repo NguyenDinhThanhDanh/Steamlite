@@ -9,7 +9,8 @@ import steam.microclient.exceptions.*;
 import steam.serviceauth.client.Client;
 import steam.serviceauth.exception.ClientInexistantException;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
-import steam.serviceauth.modele.FacadeClient;
+import steam.serviceauth.modele.ClientServiceImpl;
+//import steam.serviceauth.modele.FacadeClient;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -19,35 +20,23 @@ import java.time.LocalDate;
 public class ControleurClients {
 
     @Autowired
-    FacadeClient facadeClient;
+    ClientServiceImpl clientService;
 
     @PostMapping(value = "/inscription")
     public ResponseEntity<String> inscription(@RequestParam String pseudo, @RequestParam String mdp) {
-        try {
-            this.facadeClient.inscription(pseudo,mdp, LocalDate.now());
-            System.out.println(LocalDate.now().toString());
+            this.clientService.createUtilisateur(mdp,pseudo,LocalDate.now().toString());
             return ResponseEntity.ok("Le compte a bien été crée");
-        } catch (PseudoDejaPrisException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Pseudo "+pseudo+" déjà pris");
-        } catch (MotDePasseInvalideException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mot de passe doit contenir au moins 5 caractères");
-        }
     }
     @PostMapping(value="/connexion")
     public ResponseEntity<String> connexion(@RequestParam String pseudo,@RequestParam String mdp){
-        try{
-            Client client= this.facadeClient.connexion(pseudo,mdp);
-            //return ResponseEntity.created(URI.create("/connexion/" + client.getIdC())).body("L'utilisateur " + client.getPseudo() + " est connecté ");
-            return ResponseEntity.ok("L'utilisateur " + client.getPseudo() + " est connecté ");
-        }catch (UtilisateurPasInscritException | OperationNonAutorisee | JoueurInexistantException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le client n'existe pas");
-        }
+        Client client= this.clientService.connexion(pseudo,mdp);
+        return ResponseEntity.ok("L'utilisateur " + client.getPseudo() + " est connecté ");
     }
     @PostMapping(value="/{idC}/deconnexion")
     public ResponseEntity<String> deconnexion(@PathVariable int idC){
         try{
-            Client client = this.facadeClient.getClientById(idC);
-            this.facadeClient.deconnexion(client);
+            Client client = this.clientService.getClientById(idC);
+            this.clientService.deconnexion(client);
             return ResponseEntity.created(URI.create("/deconnexion")).body("L'utilisateur "+client.getPseudo() + " est déconnecté ");
         } catch (ClientInexistantException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client pas inscrit");
@@ -58,7 +47,7 @@ public class ControleurClients {
     @PostMapping(value="/token")
     public ResponseEntity<String> creationToken(@RequestParam String pseudo,@RequestParam String mdp){
         try{
-            String token= this.facadeClient.genererToken(pseudo,mdp);
+            String token= this.clientService.genererToken(pseudo,mdp);
             return ResponseEntity.status(HttpStatus.OK).header("auth_token",token).body("Token is in header");
         } catch (OperationNonAutorisee e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorize");
@@ -71,7 +60,7 @@ public class ControleurClients {
     @GetMapping(value = "/token")
     public ResponseEntity<String> checkToken(@RequestParam String token){
         try {
-            return ResponseEntity.ok(this.facadeClient.checkToken(token));
+            return ResponseEntity.ok(this.clientService.checkToken(token));
         } catch (MauvaisTokenException e) {
             return ResponseEntity.notFound().build();
         }
