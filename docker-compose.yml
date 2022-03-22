@@ -72,7 +72,6 @@ services:
 
     volumes:
       - ./bdd/social/setup-social.js:/docker-entrypoint-initdb.d/setup-social.js:ro
-      - ./bdd/social/insert-social.js:/docker-entrypoint-initdb.d/insert-social.js:ro
       - ./data/mongo/social:/data/db
 
 volumes:

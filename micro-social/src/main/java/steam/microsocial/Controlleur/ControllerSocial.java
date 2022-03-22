@@ -34,12 +34,12 @@ public class ControllerSocial {
     }
 
     @GetMapping(value = "/message/{idMessage}")
-    public ResponseEntity<Social> getMessageJoueur(@PathVariable Integer idMessage){
+    public ResponseEntity<Collection<Social>> getMessageJoueur(@PathVariable Integer idMessage){
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
-            Social social = serviceSocial.getSocial(idMessage);
-            ResponseEntity<Social> responseEntity = ResponseEntity.ok(social);
+            Collection<Social> social = serviceSocial.getSocialAll();
+            ResponseEntity<Collection<Social>> responseEntity = ResponseEntity.ok(social);
             return responseEntity;
         } catch (Exception e) {
             e.printStackTrace();

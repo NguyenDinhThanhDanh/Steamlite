@@ -8,6 +8,8 @@ import steam.microsocial.Repository.RepositorySocial;
 import steam.microsocial.Repository.SocialRepositoryCustom;
 
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 public class ServiceSocialImpl implements ServiceSocial {
@@ -21,12 +23,15 @@ public class ServiceSocialImpl implements ServiceSocial {
     @Override
     public void sendNewMessage(Message message) {
         Social monSocial = socialRepositoryCustom.getSocialByJoueur(message);
-        System.out.println("iciiiiiiiiiiii");
+        System.out.println("POURQUOI");
         socialRepositoryCustom.save(monSocial);
     }
 
     @Override
-    public Social getSocial(Integer idMessage) {
-        return repositorySocial.findById(idMessage).get();
+    public Collection<Social> getSocialAll() {
+
+        Collection<Social> social = new ArrayList<>();
+        repositorySocial.findAll().forEach(social::add);
+        return social;
     }
 }

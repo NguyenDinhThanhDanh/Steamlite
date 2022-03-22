@@ -7,18 +7,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.List;
 
-@Document(collection = "Social")
+@Document(collection = "social")
 public class Social {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int idSocial;
     private int envoyeur;
     private List<Message> messages;
 
 
     public Social(int idSocial, List<Message> messages, int envoyeur) {
-        this.idSocial = idSocial;
         this.messages = messages;
         this.envoyeur = envoyeur;
     }

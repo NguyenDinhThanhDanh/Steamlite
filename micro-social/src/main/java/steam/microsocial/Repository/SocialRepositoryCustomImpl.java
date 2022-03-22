@@ -1,6 +1,7 @@
 package steam.microsocial.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Social;
@@ -11,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Repository("SocialRepositoryCustom")
 public class SocialRepositoryCustomImpl implements SocialRepositoryCustom{
 
     @Autowired
@@ -23,6 +24,7 @@ public class SocialRepositoryCustomImpl implements SocialRepositoryCustom{
         repositorySocial.findAll().forEach(listeSocial::add);
         for(Social e : listeSocial){
             if(e.getEnvoyeur() == message.getEnvoyeur()) {
+                System.out.println("CEST GAMEEE");
                 return e;
             }
         }
@@ -52,29 +54,32 @@ public class SocialRepositoryCustomImpl implements SocialRepositoryCustom{
     @Override
     public void save(Social social) {
         try {
-            Social socialExistant = repositorySocial.findById(social.getIdSocial()).stream().collect(Collectors.toList()).get(0);
+
+            Social socialExistant = repositorySocial.findById(social.getIdSocial()).get();
+            System.out.println(socialExistant);
             List<Message> messages = socialExistant.getListeMessage();
             messages.add(socialExistant.getListeMessage().size(), social.getListeMessage().get(0));
+            System.out.println(messages.size());
+            System.out.println(messages);
             socialExistant.setListeMessage(messages);
 
-            repositorySocial.delete(repositorySocial.findById(socialExistant.getIdSocial()).stream().collect(Collectors.toList()).get(0));
-            System.out.println("ici");
+            repositorySocial.delete(social);
             System.out.println(socialExistant);
             System.out.println(socialExistant.getEnvoyeur());
             repositorySocial.insert(socialExistant);
         }
         catch (Exception e){
-            System.out.println("iciiiiiiiis");
+            System.out.println("DU COUP ICI");
             List<Message> messages = new ArrayList<>();
             messages.add(social.getListeMessage().get(0));
 
+
             Social newSocial = new Social(
-                    social.getListeMessage().get(0).getIdMessage(),
+                    repositorySocial.findAll().size() + 1,
                     messages,
                     social.getEnvoyeur()
 
             );
-            System.out.println("ET LAA ?");
 
             repositorySocial.insert(newSocial);
         }
