@@ -3,12 +3,16 @@ POST http://localhost:8082/social/message
 Content-Type: application/json
 
 {
-  "receveur": "2",
-  "envoyeur" : 1,
+  "receveur": 2,
+  "envoyeur" : 4,
   "dateChat" : "20/03/2022",
   "message" : "test chien"
 }
 
 ###
-GET http://localhost:8082/social/message/0
+GET http://localhost:8082/social/message
+Content-Type: application/json
+
+###
+GET http://localhost:8082/social/recevoir
 Content-Type: application/json

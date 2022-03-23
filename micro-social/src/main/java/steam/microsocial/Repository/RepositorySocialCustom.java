@@ -4,8 +4,8 @@ import org.springframework.stereotype.Repository;
 import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Social;
 
-@Repository("SocialRepositoryCustom")
-public interface SocialRepositoryCustom {
+@Repository("RepositorySocialCustom")
+public interface RepositorySocialCustom {
     void save(Social social);
     Social getSocialByJoueur(Message message);
 }

@@ -2,8 +2,6 @@ package steam.microsocial.Entities;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.List;
 
@@ -17,6 +15,7 @@ public class Social {
 
 
     public Social(int idSocial, List<Message> messages, int envoyeur) {
+        this.idSocial = idSocial;
         this.messages = messages;
         this.envoyeur = envoyeur;
     }
