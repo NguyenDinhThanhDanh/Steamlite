@@ -59,5 +59,44 @@ services:
       - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql/catalogue:/var/lib/
 
+  mysql-fournisseur:
+    container_name: mysql-fournisseur
+    image: mysql:8.0
+    restart: always
+
+    command: --default-authentication-plugin=mysql_native_password
+
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_LOGIN: "root"
+
+    ports:
+      - "3309:3306"
+
+    volumes:
+      - ./bdd/fournisseur/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./bdd/fournisseur/table.sql:/docker-entrypoint-initdb.d/table.sql
+      - ./data/mysql/fournisseur:/var/lib/mysql
+
+  service-fournisseur:
+    container_name: service-fournisseur
+    image: service-fournisseur:latest
+    restart: on-failure
+
+    build:
+      context: ./micro-fournisseur
+      dockerfile: Dockerfile
+
+    environment:
+      - JAVA_TOOL_OPTIONS=
+        -DCONSUL_HOST=discovery
+
+    depends_on:
+      - discovery
+      - mysql-fournisseur
+
+    ports:
+      - "6869:8080"
+
 volumes:
   data:
