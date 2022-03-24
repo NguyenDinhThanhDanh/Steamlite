@@ -1,3 +1,3 @@
-CREATE DATABASE projet;
+CREATE DATABASE service_client;
 
-USE projet;
+USE service_client;
