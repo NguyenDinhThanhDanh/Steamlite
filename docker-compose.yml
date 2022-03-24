@@ -23,7 +23,6 @@ services:
 
     volumes:
       - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./bdd/client/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql/client:/var/lib/mysql
 
   mysql-catalogue:
@@ -117,7 +116,7 @@ services:
       - mysql-client
 
     ports:
-      - "6869:8080"
+      - "6872:8080"
 
   mongo-vente:
     container_name: mongo-vente
