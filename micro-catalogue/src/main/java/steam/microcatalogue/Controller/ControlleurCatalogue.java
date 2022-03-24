@@ -87,7 +87,7 @@ public class ControlleurCatalogue {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 
-    @PutMapping(value = "/jeu/modifier/{id}")
+    @PutMapping(value = "/jeu/{id}")
     public ResponseEntity<String> updateJeu(@RequestBody Catalogue catalogue, @PathVariable String id){
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/

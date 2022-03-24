@@ -1,3 +1,4 @@
+###
 GET http://localhost:8080/catalogue/jeu
 
 ###
@@ -13,6 +14,19 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/catalogue/jeu
 Content-Type: application/json
+
+###
+PUT http://localhost:8080/catalogue/jeu/1
+Content-Type: application/json
+
+{
+  "nomJeu" : "Lost Ark",
+  "dateJeu" : "25/04/2021",
+  "nomF": "Tripod Studio"
+}
+
+###
+GET http://localhost:8080/catalogue/jeu
 
 ###
 DELETE http://localhost:8080/catalogue/jeu/2

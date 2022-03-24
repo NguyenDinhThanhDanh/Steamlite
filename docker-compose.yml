@@ -59,6 +59,21 @@ services:
       - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql/catalogue:/var/lib/
 
+  mongo-social:
+    container_name: mongo-social
+    image: mongo:latest
+    restart: always
+
+    environment:
+      MONGO_INITDB_DATABASE: service_social
+
+    ports:
+      - "27018:27017"
+
+    volumes:
+      - ./bdd/social/setup-social.js:/docker-entrypoint-initdb.d/setup-social.js:ro
+      - ./data/mongo/social:/data/db
+
   mysql-fournisseur:
     container_name: mysql-fournisseur
     image: mysql:8.0
@@ -97,6 +112,7 @@ services:
 
     ports:
       - "6869:8080"
+
 
 volumes:
   data:
