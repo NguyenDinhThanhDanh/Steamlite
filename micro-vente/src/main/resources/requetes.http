@@ -1,0 +1,20 @@
+GET http://localhost:8080/vente/
+
+###
+POST http://localhost:8080/vente/
+Content-Type: application/json
+
+{
+  "idJeu" : "8",
+  "idClient" : 3,
+  "prixAchat": 30.0,
+  "dateAchat": "19/04/2022"
+}
+
+###
+GET http://localhost:8080/vente/jeu/7
+
+###
+GET http://localhost:8080/vente/client/3
+
+###
