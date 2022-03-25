@@ -7,6 +7,13 @@ services:
     ports:
       - "8500:8500"
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   mysql-client:
     container_name: mysql-client
     image: mysql:8.0
