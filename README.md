@@ -95,14 +95,19 @@ Pour remédier à ce problème : \
 #### Pas de base de données projet dans MySQL / Fichier table.sql non lu
 
 Il est possible que le container mysql_projet ait été déjà lancé avant que des modifications sur le docker-compose ou la lecture des fichiers .sql ne soient pris en compte.\
-Il faut donc, après avoir lancer `docker-compose up`, ctrl-c pour arrêté les containers ou exit\
-Supprimer les containers après les avoir arrêtés : `docker rm $(docker ps -aq)`\
+Il faut donc, après avoir lancer `docker-compose up`, `docker-compose up` pour arrêté les containers ou exit\
 Supprimer les volumes de docker : `docker volume rm $(docker volume ls -q)`\
 Supprimer le dossier data : `sudo rm -rf data/`
 
-> sudo est important car les fichiers de mongo sont sécurisés \
+> sudo est important car les fichiers de mongo sont sécurisés
 
-Puis de relancer `docker-compose up`
+Puis de relancer `docker-compose up -d`
+
+#### Container se lance et relance en permanance
+
+Cela se produit lorsque le dossier data/ fait des caprices. Il suffit de `docker-compose down` et de le supprimer.
+
+> sudo est important car les fichiers de mongo sont sécurisés
 
 ## URIs
 
