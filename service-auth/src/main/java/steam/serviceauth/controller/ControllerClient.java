@@ -1,4 +1,4 @@
-package steam.serviceauth.controleur;
+package steam.serviceauth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/authent")
-public class ControleurClients {
+public class ControllerClient {
 
     @Autowired
     ClientServiceImpl clientService;
