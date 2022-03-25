@@ -64,5 +64,9 @@ namespace micro_fournisseur.Repositories
             }
             //Ctx.FindOneAndReplace(Builders<Product>.Filter.Eq("Id", product.Id), product);
         }
+        public void DeleteJeu(string idJ)
+        {
+            
+        }
     }
 }

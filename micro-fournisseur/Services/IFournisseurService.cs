@@ -10,8 +10,11 @@ namespace micro_fournisseur.Services
         public Jeu AjouterJeu(Jeu jeu);
         public Jeu ? GetJeuById(string id);
         public List<Jeu> GetJeuxFournisseur(string NomFournisseur);
+        public List<Jeu> GetJeux();
         public FournisseurDTO ? GetFournisseurById(string id);
         public FournisseurDTO ? GetFournisseurByNom(string nomF);
         public List<FournisseurDTO> GetFournisseurs();
+        public void DeleteJeu(string IdJeu);
+        public void DeleteFournisseur(string IdFournisseur);
     }
 }
