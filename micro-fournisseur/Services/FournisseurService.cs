@@ -44,6 +44,11 @@ namespace micro_fournisseur.Services
             return FournisseurRepository.GetAll();
         }
 
+        public List<Jeu> GetJeux()
+        {
+            return new List<Jeu>();
+        }
+
         public FournisseurDTO ? GetFournisseurById(string id)
         {
             return FournisseurRepository.GetById(id);
@@ -59,5 +64,14 @@ namespace micro_fournisseur.Services
             return JeuRepository.GetById(id);
         }
 
+        public void DeleteJeu(string IdJeu)
+        {
+            JeuRepository.DeleteJeu(IdJeu);
+        }
+
+        public void DeleteFournisseur(string IdFournisseur)
+        {
+            FournisseurRepository.DeleteFournisseur(IdFournisseur);
+        }
     }
 }

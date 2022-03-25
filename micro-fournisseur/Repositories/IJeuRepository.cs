@@ -9,7 +9,6 @@ namespace micro_fournisseur.Repositories
         Jeu ? GetById(string id);
         Jeu ? GetByNom(string NomJeu);
         void SaveJeu(Jeu jeu);
-
-        //void DeleteJeu(string id);
+        void DeleteJeu(string idJ);
     }
 }

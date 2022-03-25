@@ -108,5 +108,14 @@ namespace micro_fournisseur.Repositories
             }
             return 0;
         }
+
+        public void DeleteFournisseur(string idF)
+        {
+            string sql = "DELETE FROM FOURNISSEUR where idF = @idFour";
+            MySqlCommand cmd = new MySqlCommand(sql, mySql);
+            cmd.Parameters.AddWithValue("@idFour", idF);
+            cmd.ExecuteNonQuery();
+            
+        }
     }
 }

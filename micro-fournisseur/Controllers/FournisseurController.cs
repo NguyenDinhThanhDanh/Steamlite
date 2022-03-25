@@ -52,6 +52,29 @@ namespace micro_fournisseur.Controllers
             return Ok();
         }
 
+        // Get jeu/
+        [HttpGet("~/jeux")]
+        public List<Jeu> GetAllJeux()
+        {
+            return FournisseurService.GetJeux();
+        }
+
+        // POST /jeu/
+        [HttpPost("~/jeu")]
+        public IActionResult AjouterJeu([FromBody] Jeu jeu)
+        {
+            var result = FournisseurService.AjouterJeu(jeu);
+            return Created(Url.RouteUrl("GetJeuById", new { id = result.IdJeu }), result);
+        }
+
+        [HttpDelete("~/jeu/{id}")]
+        public IActionResult DeleteJeu(string id)
+        {
+            FournisseurService.DeleteJeu(id);
+            return Ok();
+        }
+
+
         [HttpGet("~/fournisseur/{id}")]
         public IActionResult GetFournisseur(string id)
         {
@@ -85,12 +108,11 @@ namespace micro_fournisseur.Controllers
             return Ok(fournisseur);
         }
 
-        // POST fournisseur/jeu/
-        [HttpPost("~/jeu")]
-        public IActionResult AjouterJeu([FromBody] Jeu jeu)
+        // Get fournisseurs/
+        [HttpGet("~/fournisseurs")]
+        public List<FournisseurDTO> GetAllFournisseurs()
         {
-            var result = FournisseurService.AjouterJeu(jeu);
-            return Created(Url.RouteUrl("GetJeuById", new { id = result.IdJeu }), result);
+            return FournisseurService.GetFournisseurs();
         }
 
         // POST fournisseur/inscription/
@@ -105,11 +127,11 @@ namespace micro_fournisseur.Controllers
             return Ok();
         }
 
-        // Get fournisseurs/
-        [HttpGet("~/fournisseurs")]
-        public List<FournisseurDTO> GetAllFournisseurs()
+        [HttpDelete("~/fournisseur/{id}")]
+        public IActionResult DeleteFournisseur(string id)
         {
-            return FournisseurService.GetFournisseurs();
+            FournisseurService.DeleteFournisseur(id);
+            return Ok();
         }
     }
 }

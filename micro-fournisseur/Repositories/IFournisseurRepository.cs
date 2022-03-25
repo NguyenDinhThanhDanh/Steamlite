@@ -8,7 +8,6 @@ namespace micro_fournisseur.Repositories
         FournisseurDTO ? GetById(string id);
         FournisseurDTO ? GetByNom(string nomF);
         int SaveFournisseur(Fournisseur fournisseur);
-
-        //void DeleteFournisseur(string id);
+        void DeleteFournisseur(string idF);
     }
 }
