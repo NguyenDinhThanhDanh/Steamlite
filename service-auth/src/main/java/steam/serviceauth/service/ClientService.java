@@ -1,18 +1,16 @@
-package steam.serviceauth.modele;
+package steam.serviceauth.service;
 
 import org.springframework.stereotype.Repository;
-import steam.microclient.exceptions.JoueurInexistantException;
+import steam.microclient.exceptions.ClientInexistantException;
 import steam.microclient.exceptions.MauvaisTokenException;
 import steam.microclient.exceptions.OperationNonAutorisee;
 import steam.microclient.exceptions.PseudoDejaPrisException;
-import steam.serviceauth.client.Client;
+import steam.serviceauth.entities.Client;
 import steam.serviceauth.exception.ClientDejaConnecte;
-import steam.serviceauth.exception.ClientInexistantException;
 import steam.serviceauth.exception.IdClientUnknownException;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Repository
 public interface ClientService {
@@ -21,10 +19,10 @@ public interface ClientService {
     Collection<Client> getAllUser();
     Client getUserById(int idUser) throws IdClientUnknownException;
     Client getUserByPseudo(String pseudo);
-    String genererToken(String nomClient, String mdpClient) throws JoueurInexistantException, OperationNonAutorisee, UtilisateurPasInscritException;
+    String genererToken(String nomClient, String mdpClient) throws ClientInexistantException, OperationNonAutorisee, UtilisateurPasInscritException;
     String checkToken(String token) throws MauvaisTokenException;
     Client connexion(String pseudo, String mdp) throws UtilisateurPasInscritException, ClientDejaConnecte;
-    void deconnexion(Client client) throws ClientInexistantException, OperationNonAutorisee;
+    void deconnexion(Client client) throws steam.serviceauth.exception.ClientInexistantException, OperationNonAutorisee;
 
     Client getClientById(int idC);
 }
