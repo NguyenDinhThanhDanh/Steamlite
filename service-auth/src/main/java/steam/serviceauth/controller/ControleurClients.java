@@ -4,29 +4,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import steam.microclient.exceptions.*;
+import steam.serviceauth.exception.*;
 import steam.serviceauth.entities.Client;
 import steam.serviceauth.exception.ClientDejaConnecte;
+import steam.serviceauth.exception.ClientInexistantException;
+import steam.serviceauth.exception.OperationNonAutorisee;
 import steam.serviceauth.exception.UtilisateurPasInscritException;
-import steam.serviceauth.service.ClientServiceImpl;
+import steam.serviceauth.service.*;
 
 import java.net.URI;
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/authent")
-public class ControllerClient {
+public class ControleurClients {
 
     @Autowired
-    ClientServiceImpl clientService;
+   ClientServiceImpl clientService;
 
     @PostMapping(value = "/inscription")
-    public ResponseEntity<String> inscription(@RequestParam String pseudo, @RequestParam String mdp) {
+    public ResponseEntity<String> inscription(@RequestBody Client client) {
         try {
-            this.clientService.createUtilisateur(mdp, pseudo, LocalDate.now().toString());
+            this.clientService.createUtilisateur(client);
             return ResponseEntity.ok("Le compte a bien été crée");
         }catch (PseudoDejaPrisException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Pseudo"+pseudo+"deja pris");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Pseudo"+client.getPseudo()+"deja pris");
         }
     }
     @PostMapping(value="/connexion")
@@ -46,7 +47,7 @@ public class ControllerClient {
             Client client = this.clientService.getClientById(idC);
             this.clientService.deconnexion(client);
             return ResponseEntity.created(URI.create("/deconnexion")).body("L'utilisateur "+client.getPseudo() + " est déconnecté ");
-        } catch (steam.serviceauth.exception.ClientInexistantException e) {
+        } catch (ClientInexistantException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client pas inscrit");
         } catch (OperationNonAutorisee e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorize Operation");
@@ -59,8 +60,8 @@ public class ControllerClient {
             return ResponseEntity.status(HttpStatus.OK).header("auth_token",token).body("Token is in header");
         } catch (OperationNonAutorisee e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorize");
-        } catch (ClientInexistantException e) {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (JoueurInexistantException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } catch (UtilisateurPasInscritException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
@@ -73,6 +74,14 @@ public class ControllerClient {
             return ResponseEntity.notFound().build();
         }
     }
+    /*@GetMapping(value="/test")
+    public Mono<String> principal(JwtAuthenticationToken principal){
+        Map<String,Object> map= principal.getTokenAttributes();
+        String name=(String)map.get("given_name");
+        return Mono.just("hello"+name);
+
+    }*/
+
 
 
 }

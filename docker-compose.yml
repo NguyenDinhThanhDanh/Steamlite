@@ -19,11 +19,42 @@ services:
       MYSQL_ROOT_LOGIN: "root"
 
     ports:
-      - "3306:3306"
+      - "3346:3306"
 
     volumes:
       - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./data/mysql/client:/var/lib/mysql
+  mysql-kc:
+    image: mysql:8.0
+    ports:
+      - "3366:3306"
+    restart: always
+    environment:
+      MYSQL_USER: keycloak_user
+      MYSQL_PASSWORD: keycloak_password
+      MYSQL_DATABASE: keycloak_db
+      MYSQL_ROOT_PASSWORD: root_password
+
+  keycloak:
+    image: jboss/keycloak:16.1.1
+    volumes:
+      - ./imports:/opt/jboss/keycloak/imports
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    environment:
+      DB_VENDOR: mysql
+      DB_ADDR: mysql-kc
+      DB_PORT: 3306
+      DB_USER: keycloak_user
+      DB_PASSWORD: keycloak_password
+      DB_DATABASE: keycloak_db
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - "8000:8080"
+    restart: unless-stopped
+    depends_on:
+      - mysql-kc
 
   mysql-catalogue:
     container_name: mysql-catalogue

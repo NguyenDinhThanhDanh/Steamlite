@@ -1,4 +1,21 @@
-POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
+POST http://localhost:8000/auth/realms/steam/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=steamlite-web&username=admin&password=admin&grant_type=password
+
+
+###
+POST http://localhost:8091/authent/inscription/
+Content-Type: application/json
+
+{ "pseudo": "user",
+  "mdp": "user",
+  "email": "user@user.com"
+}
+
+###
+
+POST localhost:8091/authent/inscription?pseudo=dad&mdp=dad
 
 > {%
 client.test("Request executed successfully", function() {
@@ -7,16 +24,7 @@ client.assert(response.status === 200, "Le compte n'a pas été créé");
 %}
 ###
 
-POST localhost:8081/authent/inscription?pseudo=dad&mdp=dad
-
-> {%
-client.test("Request executed successfully", function() {
-client.assert(response.status === 200, "Le compte n'a pas été créé");
-});
-%}
-###
-
-POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
+POST localhost:8091/authent/inscription?pseudo=zed&mdp=zed
 
 > {%
 client.test("Request executed successfully", function() {
@@ -25,7 +33,7 @@ client.test("Request executed successfully", function() {
 %}
 ###
 
-POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
+POST localhost:8091/authent/connexion?pseudo=zed&mdp=zed
 
 > {%
 client.test("Request executed successfully", function() {
@@ -35,7 +43,7 @@ client.assert(response.status === 200, "Connection");
 
 ###
 
-POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
+POST localhost:8091/authent/connexion?pseudo=zed&mdp=zed
 
 > {%
 client.test("Request executed successfully", function() {
@@ -45,7 +53,7 @@ client.test("Request executed successfully", function() {
 
 ###
 
-POST localhost:8081/authent/token?pseudo=zed&mdp=zed
+POST localhost:8091/authent/token?pseudo=zed&mdp=zed
 
 > {%
 client.global.set("auth_token", response.headers.valueOf("auth_token"));
@@ -54,7 +62,7 @@ client.test("Request executed successfully", function() {
 });
 %}
 ###
-GET localhost:8081/authent/token?token={{auth_token}}
+GET localhost:8091/authent/token?token={{auth_token}}
 
 
 > {%
@@ -63,7 +71,7 @@ client.test("Request executed successfully", function() {
 });
 %}
 ###
-GET localhost:8081/authent/token?token=rezarzerar
+GET localhost:8091/authent/token?token=rezarzerar
 
 
 > {%

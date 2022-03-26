@@ -15,6 +15,16 @@ public class Client {
     private int idC;
     private String pseudo;
     private String mdp;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    private String email;
     private String dateInscrit;
 
     public String getDateInscrit() {

@@ -1,38 +1,68 @@
 package steam.serviceauth.service;
 
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import steam.microclient.exceptions.ClientInexistantException;
-import steam.microclient.exceptions.MauvaisTokenException;
-import steam.microclient.exceptions.OperationNonAutorisee;
-import steam.microclient.exceptions.PseudoDejaPrisException;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import steam.serviceauth.exception.*;
+
 import steam.serviceauth.entities.Client;
 import steam.serviceauth.repository.ClientRepository;
-import steam.serviceauth.exception.ClientDejaConnecte;
-import steam.serviceauth.exception.IdClientUnknownException;
-import steam.serviceauth.exception.UtilisateurPasInscritException;
+import steam.serviceauth.service.ClientService;
 
+import java.net.http.HttpResponse;
 import java.util.*;
+
+import static org.springframework.http.HttpMethod.POST;
 
 @Service
 public class ClientServiceImpl implements ClientService {
+    private String client_id="steamlite-web";
+    private String value="steam";
+    @Autowired
+    private ClientRepository clientRepository;
 
-       @Autowired
-   private ClientRepository clientRepository;
-
-       private HashMap<String,Client> clientsConnectes;
+    private HashMap<String,Client> clientsConnectes;
 
     public ClientServiceImpl(){
         this.clientsConnectes= new HashMap<>();
     }
 
     @Override
-    public void createUtilisateur(String mdp, String pseudo, String dateInscrit) throws PseudoDejaPrisException {
-        Client client= new Client(pseudo, mdp, dateInscrit);
+    public void createUtilisateur(Client client) throws PseudoDejaPrisException {
+        String pseudo=client.getPseudo();
+        String mdp=client.getMdp();
+        String email="test";
+        System.out.println(pseudo);
         if(this.verifUser(pseudo,mdp)){
             throw new PseudoDejaPrisException();
         }
         else if(Objects.nonNull(client)){
+            HttpHeaders header= new HttpHeaders();
+            header.setBearerAuth(this.keycloakToken(pseudo,mdp));
+            if(this.keycloakToken("admin","admin")==null){
+                System.out.println("bad token");
+            }
+            System.out.println(this.keycloakToken("admin","admin"));
+
+            /*RestTemplate restTemplate = new RestTemplate();
+            header.setContentType(MediaType.APPLICATION_JSON);
+            JSONObject json= new JSONObject();
+            json.put("username",pseudo);
+            json.put("email",email);
+            json.put("emailVerified",true);
+            json.put("Enabled",true);
+           HttpEntity<String> requesteEntity= new HttpEntity<>(json.toString(),header);
+            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/steam",POST,requesteEntity,String.class);*/
+
             clientRepository.save(client);
         }
 
@@ -40,11 +70,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public boolean verifUser(String pseudo, String mdp) {
-       if(clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp)==null){
-           return false;
-       }else{
-           return true;
-       }
+        if(clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp)==null){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     @Override
@@ -69,9 +99,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public String genererToken(String nomClient, String mdpClient) throws ClientInexistantException, OperationNonAutorisee, UtilisateurPasInscritException {
+    public String genererToken(String nomClient, String mdpClient) throws JoueurInexistantException, OperationNonAutorisee, UtilisateurPasInscritException {
         if (!this.verifUser(nomClient,mdpClient))
-            throw new ClientInexistantException();
+            throw new JoueurInexistantException();
 
         Client client = this.getUserByPseudo(nomClient);
         System.out.println(client.getMdp());
@@ -112,10 +142,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deconnexion(Client client) throws steam.serviceauth.exception.ClientInexistantException, OperationNonAutorisee {
+    public void deconnexion(Client client) throws ClientInexistantException, OperationNonAutorisee {
         if(this.verifUser(client.getPseudo(),client.getMdp())){
             if(!clientsConnectes.containsKey(client.getPseudo()))
-                throw new steam.serviceauth.exception.ClientInexistantException();
+                throw new ClientInexistantException();
             this.clientsConnectes.remove(client.getPseudo());
         }
         else{
@@ -129,4 +159,25 @@ public class ClientServiceImpl implements ClientService {
         return this.clientRepository.findById(idC).get();
 
     }
+
+    @Override
+    public String keycloakToken(String username, String password) {
+
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String,String> map = new LinkedMultiValueMap<>();
+        map.add("client_id",client_id);
+        map.add("username",username);
+        map.add("password",password);
+        map.add("grant_type","password");
+        RestTemplate restTemplate= new RestTemplate();
+        HttpEntity<MultiValueMap<String,String>> httpEntity= new HttpEntity<>(map,header);
+        ResponseEntity<String> response= restTemplate.exchange("http://localhost:8000/auth/realms/steam/protocol/openid-connect/token",POST,
+                httpEntity,String.class);
+        String token=response.getBody().split(",")[0].split(":")[1].split("\"")[1];
+        return token;
+    }
+
+
+
 }
