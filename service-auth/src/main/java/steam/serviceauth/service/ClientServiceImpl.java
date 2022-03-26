@@ -48,7 +48,9 @@ public class ClientServiceImpl implements ClientService {
         }
         else if(Objects.nonNull(client)){
             HttpHeaders header= new HttpHeaders();
-            header.setBearerAuth(this.keycloakToken(pseudo,mdp));
+            String token= this.keycloakToken("admin","admin");
+            header.setBearerAuth(token);
+            System.out.println(token);
             RestTemplate restTemplate = new RestTemplate();
             header.setContentType(MediaType.APPLICATION_JSON);
             JSONObject json= new JSONObject();
@@ -57,15 +59,12 @@ public class ClientServiceImpl implements ClientService {
             json.put("emailVerified",true);
             json.put("enabled",true);
 
-
-
-
 //            json.put("firstname","");
 //            json.put("lastname","");
 
             System.out.println(json.toString());
            HttpEntity<String> requesteEntity= new HttpEntity<>(json.toString(),header);
-            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/realms/steam",POST,requesteEntity,String.class);
+            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/realms/steam/users",POST,requesteEntity,String.class);
             System.out.println(res);
             clientRepository.save(client);
 //            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/steam",POST,requesteEntity,String.class);
