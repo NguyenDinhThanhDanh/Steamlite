@@ -1,9 +1,9 @@
-package steam.serviceauth.dao;
+package steam.serviceauth.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import steam.serviceauth.client.Client;
+import steam.serviceauth.entities.Client;
 
 @Repository
 public interface ClientRepository extends CrudRepository<Client, Integer> {

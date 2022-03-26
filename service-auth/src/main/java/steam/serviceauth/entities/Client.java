@@ -1,4 +1,4 @@
-package steam.serviceauth.client;
+package steam.serviceauth.entities;
 
 
 import lombok.AllArgsConstructor;

@@ -1,17 +1,16 @@
-package steam.serviceauth.modele;
+package steam.microclient.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import steam.microclient.exceptions.JoueurInexistantException;
+import steam.microclient.exceptions.ClientInexistantException;
 import steam.microclient.exceptions.MauvaisTokenException;
 import steam.microclient.exceptions.OperationNonAutorisee;
 import steam.microclient.exceptions.PseudoDejaPrisException;
-import steam.serviceauth.client.Client;
-import steam.serviceauth.dao.ClientRepository;
-import steam.serviceauth.exception.ClientDejaConnecte;
-import steam.serviceauth.exception.ClientInexistantException;
-import steam.serviceauth.exception.IdClientUnknownException;
-import steam.serviceauth.exception.UtilisateurPasInscritException;
+import steam.microclient.entities.Client;
+import steam.microclient.repository.ClientRepository;
+import steam.microclient.exceptions.ClientDejaConnecte;
+import steam.microclient.exceptions.IdClientUnknownException;
+import steam.microclient.exceptions.UtilisateurPasInscritException;
 
 import java.util.*;
 
@@ -68,35 +67,6 @@ public class ClientServiceImpl implements ClientService {
     public Client getUserByPseudo(String pseudo) {
         return clientRepository.findClientByPseudo(pseudo);
     }
-
-    @Override
-    public String genererToken(String nomClient, String mdpClient) throws JoueurInexistantException, OperationNonAutorisee, UtilisateurPasInscritException {
-        if (!this.verifUser(nomClient,mdpClient))
-            throw new JoueurInexistantException();
-
-        Client client = this.getUserByPseudo(nomClient);
-        System.out.println(client.getMdp());
-        if (client.checkPasswordClient(client.getMdp())) {
-            String idConnection = UUID.randomUUID().toString();
-            this.clientsConnectes.put(idConnection,client);
-            System.out.println(idConnection);
-            return idConnection;
-        }
-        else {
-            throw new OperationNonAutorisee();
-        }
-    }
-
-    @Override
-    public String checkToken(String token) throws MauvaisTokenException {
-        if (clientsConnectes.containsKey(token)){
-            return clientsConnectes.get(token).getPseudo();
-        }
-        else {
-            throw new MauvaisTokenException();
-        }
-    }
-
 
     public Client connexion(String pseudo, String mdp) throws ClientDejaConnecte, UtilisateurPasInscritException {
         Client client = clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp);
