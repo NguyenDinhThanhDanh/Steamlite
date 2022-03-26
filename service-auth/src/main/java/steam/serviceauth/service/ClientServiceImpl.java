@@ -22,6 +22,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -40,7 +41,7 @@ public class ClientServiceImpl implements ClientService {
     public void createUtilisateur(Client client) throws PseudoDejaPrisException {
         String pseudo=client.getPseudo();
         String mdp=client.getMdp();
-        String email="test";
+        String email=client.getEmail();
         System.out.println(pseudo);
         if(this.verifUser(pseudo,mdp)){
             throw new PseudoDejaPrisException();
@@ -48,22 +49,26 @@ public class ClientServiceImpl implements ClientService {
         else if(Objects.nonNull(client)){
             HttpHeaders header= new HttpHeaders();
             header.setBearerAuth(this.keycloakToken(pseudo,mdp));
-            if(this.keycloakToken("admin","admin")==null){
-                System.out.println("bad token");
-            }
-            System.out.println(this.keycloakToken("admin","admin"));
-
-            /*RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = new RestTemplate();
             header.setContentType(MediaType.APPLICATION_JSON);
             JSONObject json= new JSONObject();
-            json.put("username",pseudo);
             json.put("email",email);
+            json.put("username",pseudo);
             json.put("emailVerified",true);
-            json.put("Enabled",true);
-           HttpEntity<String> requesteEntity= new HttpEntity<>(json.toString(),header);
-            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/steam",POST,requesteEntity,String.class);*/
+            json.put("enabled",true);
 
+
+
+
+//            json.put("firstname","");
+//            json.put("lastname","");
+
+            System.out.println(json.toString());
+           HttpEntity<String> requesteEntity= new HttpEntity<>(json.toString(),header);
+            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/realms/steam",POST,requesteEntity,String.class);
+            System.out.println(res);
             clientRepository.save(client);
+//            ResponseEntity<String> res   =restTemplate.exchange("http://localhost:8000/auth/admin/steam",POST,requesteEntity,String.class);
         }
 
     }
@@ -162,7 +167,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String keycloakToken(String username, String password) {
-
+        username="admin";
+        password="admin";
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String,String> map = new LinkedMultiValueMap<>();

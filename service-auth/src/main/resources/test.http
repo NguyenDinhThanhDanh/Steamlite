@@ -8,9 +8,9 @@ client_id=steamlite-web&username=admin&password=admin&grant_type=password
 POST http://localhost:8091/authent/inscription/
 Content-Type: application/json
 
-{ "pseudo": "user",
-  "mdp": "user",
-  "email": "user@user.com"
+{ "pseudo": "Yoh",
+  "mdp": "Doe",
+  "email": "John@Doe.com"
 }
 
 ###
