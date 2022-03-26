@@ -166,8 +166,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String keycloakToken(String username, String password) {
-        username="admin";
-        password="admin";
+
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String,String> map = new LinkedMultiValueMap<>();
