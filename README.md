@@ -156,8 +156,8 @@ Ajoute un jeu au catalogue. Ici , on ajoute Lost Ark , le 18/04/2021 , du studio
 > 
 >}
 
-On modifie le jeu qui a un id de 1 , ici Lost Ark. On modifie la date ,
-qui passe du 18 avril au 25 avril.
+On modifie le jeu qui a un id de 1 , ici Lost Ark.  
+On modifie la date , qui passe du 18 avril au 25 avril.
 
 ----
 
@@ -266,3 +266,150 @@ Permet d'obtenir la liste des ventes liées au jeu d'id 7.
 >GET http://localhost:8080/vente/client/3
 
 Permet d'obtenir la liste des ventes liées au client d'id 3.
+
+----
+----
+----
+
+### service-auth
+
+>POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
+>
+>{%
+> 
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 200, "Le compte n'a pas été créé");
+>
+>});
+>
+>%}
+
+Inscrit un utilisateur sous le nom de zed , avec le mot de passe " zed ".  
+Le test vérifie que le compte a bien été créé.  
+Par exemple , si le pseudo était déjà pris , l'inscription aurait été reffusée.
+
+----
+
+>POST localhost:8081/authent/inscription?pseudo=dad&mdp=dad
+>
+>{%
+> 
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 200, "Le compte n'a pas été créé");
+>
+>});
+>
+>%}
+
+
+Inscrit un deuxième utilisateur sous le nom de dad , avec le mot de passe " dad ".  
+Le test vérifie que le compte a bien été créé.  
+Par exemple , si le pseudo était déjà pris , l'inscription aurait été reffusée.
+
+----
+
+>POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
+>
+>{%
+> 
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 409, "Il y aurait du y avoir un conflit");
+>
+>});
+>
+>%}
+
+On réessaie d'incrire le premier utilisateur : zed.  
+Le test vérifie qu'il doit y avoir un problème , vu que l'utilisateur existe déjà.
+
+----
+
+>POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
+>
+>{%
+> 
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 200, "Connection");
+>
+>});
+>
+>%}
+
+On se connecte avec le pseudo zed , mot de passe zed.  
+Le test vérifie que l'on s'est bien connecté.
+
+----
+
+>POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
+>
+>{%
+>
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 409, "Il y aurait du y avoir un conflit");
+>
+>});
+>
+>%}
+
+On se connecte une deuxième fois avec zed.  
+Le test vérifie qu'il doit y avoir un problème.  
+En effet , on est déjà connecté avec cet utilisateur.  
+On ne peut se connecter deux fois de suite.  
+
+----
+
+>POST localhost:8081/authent/token?pseudo=zed&mdp=zed
+>
+>{%
+>
+>client.global.set("auth_token", response.headers.valueOf("auth_token"));
+>
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 200, "Le token aurait dû être créé");
+>
+>});
+>
+>%}
+
+On fabrique le token de l'utilisateur.  
+Le test vérifie que le token a bien été créé.
+
+----
+
+>GET localhost:8081/authent/token?token={{auth_token}}
+>
+>{%
+> 
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 200, "Le token aurait dû être valide");
+>
+>});
+>
+>%}
+
+On obtient le token d'un utilisateur précis.  
+Le test vérifie que le token doit être valide.
+
+----
+
+>GET localhost:8081/authent/token?token=rezarzerar
+>
+>{%
+> 
+>client.test("Request executed successfully", function() {
+>
+>client.assert(response.status === 404, "Le token aurait dû être valide");
+>
+>});
+>
+>%}
+
+Permet d'obtenir le token " rezarzerar ".  
+Le test vérifie que le token " rezarzerar " existe.
