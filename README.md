@@ -175,4 +175,94 @@ Cible un jeu précis du catalogue , ici celui qui a un id de 2.
 
 Les autres requêtes sont similaires , mais avec des id différents.
 
+----
+----
+----
 
+### micro-social
+
+>POST http://localhost:8082/social/message
+> 
+>Content-Type: application/json
+>
+>{
+> 
+>"receveur": 2,
+> 
+>"envoyeur" : 4,
+> 
+>"dateChat" : "20/03/2022",
+> 
+>"message" : "test chien"
+> 
+>}
+
+Une personne , le receveur d'id 2 , envoi un message " test chien "
+à une autre personne , l'envoyeur d'id 4 , le 20/03/2022.
+
+----
+
+>GET http://localhost:8082/social/message
+> 
+>Content-Type: application/json
+
+Permet d'obtenir la liste de tout les messages de tout les utilisateurs.
+
+----
+
+>GET http://localhost:8082/social/recevoir
+> 
+>Content-Type: application/json
+
+Permet la réception d'un message de la part d'un utilisateur.
+
+----
+
+>GET http://localhost:8082/social/message/1
+>
+>Content-Type: application/json
+
+Permet d'obtenir la liste de tout les messages d'un utilisateur ayant un id de 1.
+
+----
+----
+----
+
+### micro-vente
+
+>GET http://localhost:8080/vente/
+
+Permet d'obtenir la liste de tout les jeux vendus.
+
+----
+
+>POST http://localhost:8080/vente/
+> 
+>Content-Type: application/json
+>
+>{
+> 
+>"idJeu" : "8",
+> 
+>"idClient" : 3,
+> 
+>"prixAchat": 30.0,
+> 
+>"dateAchat": "19/04/2022"
+> 
+>}
+
+Ajoute à la liste des jeux vendus , le jeu d'id 8 , acheté par le client d'id 3,
+à un prix de 30.0€ le 19/04/2022.
+
+----
+
+>GET http://localhost:8080/vente/jeu/7
+
+Permet d'obtenir la liste des ventes liées au jeu d'id 7.
+
+----
+
+>GET http://localhost:8080/vente/client/3
+
+Permet d'obtenir la liste des ventes liées au client d'id 3.
