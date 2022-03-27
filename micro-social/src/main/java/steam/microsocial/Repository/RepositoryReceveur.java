@@ -9,8 +9,11 @@ import java.util.List;
 
 public interface RepositoryReceveur extends MongoRepository<Receveur, Integer> {
     @Query(value = "{'idReceveur': ?0}")
-    List<Receveur> findByIdReceveur(int id);
+    Receveur findByIdReceveur(int id);
 
     @Query(value = "{'idReceveur': ?0}", delete = true)
     void deleteByIdReceveur(int id);
+
+    @Query(value = "{'messages.idMessage': ?0}", delete = true)
+    void deleteByIdMessage(Integer idMessage);
 }

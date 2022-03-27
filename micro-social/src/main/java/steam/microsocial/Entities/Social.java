@@ -21,7 +21,7 @@ public class Social {
     }
 
     public int getEnvoyeur() {
-        return envoyeur;
+        return this.envoyeur;
     }
 
     public void setEnvoyeur(int envoyeur) {

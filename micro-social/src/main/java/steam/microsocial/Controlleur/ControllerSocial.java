@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import steam.microcatalogue.Exception.UnknownEnvoyeurException;
+import steam.microcatalogue.Exception.UnknownIdMessageException;
 import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Receveur;
 import steam.microsocial.Entities.Social;
@@ -22,20 +24,20 @@ public class ControllerSocial {
 
     @PostMapping(value = "/message")
     public ResponseEntity<String> addMessage(@RequestBody Message message){
-/*      HttpClient httpClient = HttpClient.newHttpClient();
+     /* HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
             System.out.println("iciiii");
             serviceSocial.sendNewMessage(message);
-                return ResponseEntity.created(URI.create("/social/message/" + message.getIdMessage())).body("Votre message << " + message.getIdMessage() + " >> a bien été envoyé à " + message.getReceveur());
+            return ResponseEntity.created(URI.create("/social/message/" + message.getIdMessage())).body("Votre message << " + message.getIdMessage() + " >> a bien été envoyé à " + message.getReceveur());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 
-    @GetMapping(value = "/message")
-    public ResponseEntity<Collection<Social>> getMessageJoueurEnvoye(){
+    @GetMapping(value = "/message/{id}")
+    public ResponseEntity<Collection<Social>> getMessageJoueurEnvoye(@PathVariable int id){
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
@@ -48,8 +50,8 @@ public class ControllerSocial {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 
-    @GetMapping(value = "/message{idEnvoyeur}")
-    public ResponseEntity<Collection<Social>> getMessageJoueurId(@PathVariable String idEnvoyeur){
+    @GetMapping(value = "/message")
+    public ResponseEntity<Collection<Social>> getMessageJoueurAll(){
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
@@ -63,7 +65,7 @@ public class ControllerSocial {
     }
 
     @GetMapping(value = "/recevoir")
-    public ResponseEntity<Collection<Receveur>> getMessageJoueurRecu(){
+    public ResponseEntity<Collection<Receveur>> getMessageJoueurRecuAll(){
 /*      HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
@@ -74,5 +76,19 @@ public class ControllerSocial {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @DeleteMapping(value = "/message/{idMessage}/{idEnvoyeur}")
+    public ResponseEntity<String> deleteMessageById(@PathVariable Integer idEnvoyeur, @PathVariable Integer idMessage){
+        try{
+            System.out.println("id envoyeur : " + idEnvoyeur);
+            System.out.println("id envoyeur : " + idMessage);
+            serviceSocial.deleteMessage(idEnvoyeur, idMessage);
+            return ResponseEntity.created(URI.create("/social/message/" + idMessage)).body("Votre message << " + idMessage + " >> a bien été supprimé");
+        } catch (UnknownIdMessageException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("le message passé est incorrect ou n'existe pas");
+        } catch (UnknownEnvoyeurException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("vous n'etes pas connecté");
+        }
     }
 }
