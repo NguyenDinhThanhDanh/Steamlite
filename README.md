@@ -113,3 +113,66 @@ Cela se produit lorsque le dossier data/ fait des caprices. Il suffit de `docker
 
 Notre projet FAME doit pour la seconde partie pouvoir gérer les requêtes qu'on lui envoie.
 Pour se faire, voici les URIs, les méthodes employées ainsi qu'une brève description.
+
+## Requêtes
+
+### Micro-catalogue
+
+> GET http://localhost:8080/catalogue/jeu
+
+Affiche la liste de tout les jeu , autrement dit ,  le catalogue des jeux postés.
+
+----
+
+>PUT http://localhost:8080/catalogue/jeu/1
+>
+>Content-Type: application/json
+>
+>{
+>
+>"nomJeu" : "Lost Ark",
+>
+>"dateJeu" : "18/04/2021",
+>
+>"nomF": "Tripod Studio"
+>
+>}
+
+Ajoute un jeu au catalogue. Ici , on ajoute Lost Ark , le 18/04/2021 , du studio Tripod Studio.
+
+----
+
+>PUT http://localhost:8080/catalogue/jeu/1
+> 
+>Content-Type: application/json
+> 
+>{
+> 
+>"nomJeu" : "Lost Ark",
+> 
+>"dateJeu" : "25/04/2021",
+> 
+>"nomF": "Tripod Studio"
+> 
+>}
+
+On modifie le jeu qui a un id de 1 , ici Lost Ark. On modifie la date ,
+qui passe du 18 avril au 25 avril.
+
+----
+
+>DELETE http://localhost:8080/catalogue/jeu/2
+
+Supprime un jeu du catalogue , ici celui qui a un id de 2.
+
+----
+
+>GET http://localhost:8080/catalogue/jeu/2
+
+Cible un jeu précis du catalogue , ici celui qui a un id de 2.
+
+----
+
+Les autres requêtes sont similaires , mais avec des id différents.
+
+
