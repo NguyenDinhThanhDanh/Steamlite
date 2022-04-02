@@ -7,6 +7,20 @@ services:
     ports:
       - "8500:8500"
 
+  gateway:
+    container_name: gateway
+    image: gateway:latest
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_TOOL_OPTIONS=
+        -DCONSUL_HOST=discovery
+    depends_on:
+      - discovery
+
   mysql-client:
     container_name: mysql-client
     image: mysql:8.0

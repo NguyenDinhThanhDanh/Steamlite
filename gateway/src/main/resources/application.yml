@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+
+  application:
+    name: gateway
+
+  cloud:
+    consul:
+      discovery:
+        register: true
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      loadbalancer:
+        ribbon:
+          enabled: false
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+      routes:
+        - id: rewritepath_route_authen
+          uri: lb://service-auth
+          predicates:
+            - Path=/authen/**
+          filters:
+            - RewritePath=/authen(?<segment>/?.*), /authen\{segment}
+
+        - id: rewritepath_route_catalogue
+          uri: lb://micro-catalogue
+          predicates:
+            - Path=/catalogue/**
+          filters:
+            - RewritePath=/catalogue(?<segment>/?.*), /catalogue\{segment}
+            - PreserveHostHeader
+
+        - id: rewritepath_route_client
+          uri: lb://micro-client
+          predicates:
+            - Path=/client/**
+          filters:
+            - RewritePath=/client(?<segment>/?.*), /client\{segment}
+            - PreserveHostHeader
+
+        - id: rewritepath_route_fournisseur
+          uri: lb://micro-fournisseur
+          predicates:
+            - Path=/fournisseur/**
+          filters:
+            - RewritePath=/fournisseur(?<segment>/?.*), /fournisseur\{segment}
+            - PreserveHostHeader
+
+        - id: rewritepath_route_social
+          uri: lb://micro-social
+          predicates:
+            - Path=/social/**
+          filters:
+            - RewritePath=/social(?<segment>/?.*), /social\{segment}
+            - PreserveHostHeader
+
+        - id: rewritepath_route_vente
+          uri: lb://micro-vente
+          predicates:
+            - Path=/vente/**
+          filters:
+            - RewritePath=/vente(?<segment>/?.*), /vente\{segment}
+            - PreserveHostHeader
