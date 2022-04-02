@@ -16,4 +16,7 @@ public interface VenteRepository extends MongoRepository<Vente, Integer> {
 
     @Query(value = "{'_id': ?0}", fields = "{'listeAchats.idClient' : 1}")
     List<Vente> findClientByIdGame(int id);
+
+    @Override
+    void deleteById(Integer integer);
 }

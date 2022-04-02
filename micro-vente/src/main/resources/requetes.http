@@ -5,7 +5,7 @@ POST http://localhost:8080/vente/
 Content-Type: application/json
 
 {
-  "idJeu" : "8",
+  "idJeu" : "7",
   "idClient" : 3,
   "prixAchat": 30.0,
   "dateAchat": "19/04/2022"
@@ -16,5 +16,8 @@ GET http://localhost:8080/vente/jeu/7
 
 ###
 GET http://localhost:8080/vente/client/3
+
+###
+DELETE http://localhost:8080/vente/jeu/7
 
 ###

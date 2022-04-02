@@ -74,4 +74,17 @@ public class ServiceVenteImpl implements ServiceVente{
                         .spliterator(), false)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteVentesJeu(int id) throws IdGameUnkownException {
+        if(!venteRepository.existsById(id)){
+            throw new IdGameUnkownException();
+        }
+        venteRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAchatsClient(int id) throws IdGameUnkownException {
+
+    }
 }

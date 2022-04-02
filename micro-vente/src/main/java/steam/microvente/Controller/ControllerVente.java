@@ -74,11 +74,26 @@ public class ControllerVente {
             serviceVente.buyGame(achat);
             return ResponseEntity.created(URI.create("/jeu/" + achat.getIdJeu())).body(achat.getIdClient() + " a achété le jeu " + achat.getIdJeu());
         } catch (IdGameUnkownException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id du jeu inconnu");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id du jeu inconnu");
         } catch (IdClientUnknownException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id de client inconnu");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id de client inconnu");
         } catch (GameAlreadyOwnedException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(achat.getIdClient() + " a déjà achété ce jeu");
+        }
+    }
+
+    @DeleteMapping(value = "/client/{id}")
+    public ResponseEntity<String> deleteClientAchats(@PathVariable String id) throws IdClientUnknownException{
+        return ResponseEntity.ok().body("ok");
+    }
+
+    @DeleteMapping(value = "/jeu/{id}")
+    public ResponseEntity<String> deleteJeuVentes(@PathVariable String id) throws IdClientUnknownException{
+        try{
+            serviceVente.deleteVentesJeu(Integer.valueOf(id));
+            return ResponseEntity.ok().body("Les ventes du jeu " + id + " ont été supprimées");
+        } catch (IdGameUnkownException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id de jeu inconnu");
         }
     }
 }

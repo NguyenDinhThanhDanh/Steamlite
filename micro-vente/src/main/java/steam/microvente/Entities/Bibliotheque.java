@@ -26,11 +26,11 @@ public class Bibliotheque {
         this.listeAchats = listeAchats;
     }
 
-    public int getIdJeu() {
+    public int getIdClient() {
         return idClient;
     }
 
-    public void setIdJeu(int idClient) {
+    public void setIdClient(int idClient) {
         this.idClient = idClient;
     }
 

@@ -15,5 +15,7 @@ public interface ServiceVente {
     Collection<Vente> getVentesByGameId(int id) throws IdGameUnkownException;
     Collection<Bibliotheque> getVentesByClientId(int id) throws IdClientUnknownException;
     Collection<Vente> getAllVentes();
+    void deleteVentesJeu(int id) throws IdGameUnkownException;
+    void deleteAchatsClient(int id) throws IdGameUnkownException;
 
 }
