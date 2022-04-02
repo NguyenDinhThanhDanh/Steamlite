@@ -1,4 +1,4 @@
-package steam.serviceauth.entities;
+package steam.microclient.entities;
 
 
 import lombok.AllArgsConstructor;
@@ -63,9 +63,10 @@ public class Client {
 
 
 
-    public Client(String pseudo,String mdp,String dateInscrit){
+    public Client(String pseudo,String mdp,String dateInscrit,String email){
         this.pseudo= pseudo;
         this.mdp=mdp;
+        this.email=email;
         this.dateInscrit= dateInscrit;
     }
 
@@ -77,7 +78,4 @@ public class Client {
 
     }
 
-    public boolean checkPasswordClient(String mdpClient) {
-        return this.mdp.equals(mdpClient);
-    }
 }
