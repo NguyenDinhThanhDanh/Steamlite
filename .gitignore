@@ -41,6 +41,6 @@ mvnw.cmd
 data/
 
 ### .NET ###
-micro-fournisseur/.vscode
-micro-fournisseur/bin
-micro-fournisseur/obj
+micro-fournisseur/.vscode/
+micro-fournisseur/bin/
+micro-fournisseur/obj/
