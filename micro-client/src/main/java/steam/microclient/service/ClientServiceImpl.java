@@ -1,11 +1,18 @@
 package steam.microclient.service;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import steam.microclient.entities.Client;
 import steam.microclient.exceptions.*;
 import steam.microclient.repository.ClientRepository;
 
+import javax.print.attribute.standard.Media;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,10 +23,13 @@ public class ClientServiceImpl implements   ClientService{
     @Autowired
     private ClientRepository clientRepository;
 
+    //private final static String URI_TOKEN_KEYCLOAK="http://localhost:8081/authent/token/";
+
     private HashMap<String, Client> clientsConnectes;
 
-    public ClientServiceImpl(HashMap<String, Client> clientsConnectes) {
-        this.clientsConnectes = clientsConnectes;
+    public ClientServiceImpl() {
+
+        this.clientsConnectes = new HashMap<>();
     }
 
 
@@ -73,20 +83,23 @@ public class ClientServiceImpl implements   ClientService{
     }
 
     @Override
-    public Client connexion(String pseudo, String mdp) throws UtilisateurPasInscritException {
-        String uri="http://localhost:8081/authent/inscription/";
-        String token="";
+    public Client connexion(String pseudo,String mdp,String token) throws UtilisateurPasInscritException {
+
+
         Client client = clientRepository.findClientByPseudoAndAndMdp(pseudo,mdp);
         if(!this.verifUser(pseudo,mdp)){
             throw new UtilisateurPasInscritException();
         }
+
 //        if(clientsConnectes.containsKey(pseudo)) throw new ClientDejaConnecte();
         if(this.verifUser(client.getPseudo(),client.getMdp())){
-            if(!this.clientsConnectes.containsKey(client)){
+            if(!this.clientsConnectes.containsKey(token)){
                 this.clientsConnectes.put(token,client);
             }
         }
+        System.out.println(clientsConnectes.toString());
         return client;
+
     }
 
     @Override

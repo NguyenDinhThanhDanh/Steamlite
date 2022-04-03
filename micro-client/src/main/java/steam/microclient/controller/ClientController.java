@@ -30,11 +30,11 @@ public class ClientController {
 
 
     @PostMapping(value="/connexion")
-    public ResponseEntity<String> connexion(@RequestBody Map<String,String> user){
+    public ResponseEntity<String> connexion(@RequestBody Map<String,String> user,@RequestHeader(name="token") String token){
         String pseudo= user.get("pseudo");
         String mdp=user.get("mdp");
         try {
-            Client client = this.clientService.connexion(pseudo, mdp);
+            Client client = this.clientService.connexion(pseudo,mdp,token);
             return ResponseEntity.ok("L'utilisateur " + client.getPseudo() + " est connecté ");
         }catch (UtilisateurPasInscritException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client "+pseudo+ " n'existe pas dans steam");

@@ -12,7 +12,7 @@ public interface ClientService {
     Client getUserById(int idUser) throws IdClientUnknownException;
     Client getUserByPseudo(String pseudo);
     String checkToken(String token) throws MauvaisTokenException;
-    Client connexion(String pseudo, String mdp) throws UtilisateurPasInscritException;
+    Client connexion(String pseudo,String mdp,String token) throws UtilisateurPasInscritException;
     void deconnexion(Client client) throws OperationNonAutorisee;
 
     Client getClientById(int idC);

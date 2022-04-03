@@ -50,7 +50,7 @@ public class ControleurAuthent {
         String pseudo=user.get("pseudo");
         String mdp=user.get("mdp");
         String token= this.clientService.keycloakToken(pseudo,mdp);
-        return ResponseEntity.status(HttpStatus.OK).header("auth_token",token).body("Token is in header");
+        return ResponseEntity.status(HttpStatus.OK).header("token",token).body("Token is in header");
     }
 
     @PostMapping(value = "/resetpassword")
