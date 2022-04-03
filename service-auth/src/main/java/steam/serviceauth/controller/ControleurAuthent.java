@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import steam.serviceauth.entities.ClientKC;
 import steam.serviceauth.service.*;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 @RestController
@@ -51,6 +52,16 @@ public class ControleurAuthent {
         String token= this.clientService.keycloakToken(pseudo,mdp);
         return ResponseEntity.status(HttpStatus.OK).header("auth_token",token).body("Token is in header");
     }
+
+    @PostMapping(value = "/resetpassword")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String,String> credential) throws SQLException {
+        String pseudo=credential.get("pseudo");
+        String mdp=credential.get("mdp");
+        this.clientService.setUserPassWord(pseudo,mdp);
+        return ResponseEntity.status(HttpStatus.OK).body("Password set successfully");
+    }
+
+
 //    @GetMapping(value = "/token")
 //    public ResponseEntity<String> checkToken(@RequestParam String token){
 //        try {

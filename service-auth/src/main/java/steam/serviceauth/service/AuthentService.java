@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public interface AuthentService {
     void createUtilisateur(ClientKC client) throws PseudoDejaPrisException;
     String keycloakToken(String username,String password);
-    void setUserPassWord(String pseudo) throws SQLException;
+    void setUserPassWord(String pseudo,String password) throws SQLException;
 
 
 }

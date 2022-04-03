@@ -1,6 +1,7 @@
 package steam.serviceauth.service;
 
 import net.minidev.json.JSONObject;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.keycloak.representations.idm.*;
 
 import steam.serviceauth.databaseKC.MysqlDataBaseKC;
 import steam.serviceauth.entities.ClientKC;
@@ -19,6 +21,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @Service
 public class AuthentServiceImpl implements AuthentService {
@@ -82,9 +85,22 @@ public class AuthentServiceImpl implements AuthentService {
     }
 
     @Override
-    public void setUserPassWord(String pseudo) throws SQLException {
+    public void setUserPassWord(String pseudo,String mdp) throws SQLException {
         String id=this.mysqlDataBaseKC.getUserIDinKC(pseudo);
         System.out.println(id);
+        HttpHeaders header= new HttpHeaders();
+        String token= this.keycloakToken("admin","admin");
+        header.setBearerAuth(token);
+
+        RestTemplate restTemplate = new RestTemplate();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject json= new JSONObject();
+        //json.put("credentialData",mdp);
+        json.put("temporary",false);
+        json.put("value",mdp);
+        HttpEntity<String> requesteEntity= new HttpEntity<>(json.toString(),header);
+        ResponseEntity<String> response= restTemplate.exchange("http://localhost:8000/auth/admin/realms/steam/users/"+id+"/reset-password",PUT,
+                requesteEntity,String.class);
     }
 
 

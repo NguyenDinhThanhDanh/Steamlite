@@ -21,10 +21,8 @@ Content-Type: application/json
   "mdp": "gamma2",
   "email": "John@Doe.com"
 }
-
 ###
-
-POST http://localhost:8081/authent/token/
+POST http://localhost:8081/authent/resetpassword
 Content-Type: application/json
 
 {
@@ -36,6 +34,8 @@ POST http://localhost:8081/authent/token/
 Content-Type: application/json
 
 {
-  "pseudo": "John",
-  "mdp": "gamma2"
+  "pseudo": "yoh",
+  "mdp": "kali4"
 }
+###
+
