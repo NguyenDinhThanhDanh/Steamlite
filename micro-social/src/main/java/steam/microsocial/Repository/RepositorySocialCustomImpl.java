@@ -8,14 +8,16 @@ import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Social;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository("RepositorySocialCustom")
 public class RepositorySocialCustomImpl implements RepositorySocialCustom {
 
     @Autowired
     private RepositorySocial repositorySocial;
+
 
     @Override
     public Social getSocialByJoueur(Message message) {
@@ -50,21 +52,29 @@ public class RepositorySocialCustomImpl implements RepositorySocialCustom {
             if (idEnvoyeur == s.getEnvoyeur()) {
                 return s;
             }
-        }
-        System.out.println("ERREUR");
+    }
         throw new UnknownEnvoyeurException();
     }
 
     //Delete message dans les données de l'envoyeur
     @Override
     public void deleteMessageFromSocial(Social social, Integer idMessage) throws UnknownIdMessageException {
-        Collection<Message> messages = social.getListeMessage();
-        for (Message message : messages){
-            if(message.getIdMessage() == idMessage){
-                repositorySocial.deleteByIdMessage(idMessage);
-            }
+        List<Message> messages = social.getListeMessage();
+        try {
+
+            List<Message> newListMessage = messages.stream()
+                    .filter(message -> message.getIdMessage() != (idMessage)).collect(Collectors.toList());
+
+            social.setListeMessage(newListMessage);
+            repositorySocial.deleteByIdSocial(social.getIdSocial());
+            repositorySocial.insert(social);
+
         }
-        throw new UnknownIdMessageException();
+        catch (Exception e){
+            e.printStackTrace();
+            throw new UnknownIdMessageException();
+        }
+
     }
 
     @Override
@@ -77,8 +87,6 @@ public class RepositorySocialCustomImpl implements RepositorySocialCustom {
             socialExistant.setListeMessage(messages);
 
             repositorySocial.deleteByIdSocial(social.getIdSocial());
-            System.out.println(socialExistant);
-            System.out.println(socialExistant.getEnvoyeur());
             repositorySocial.insert(socialExistant);
         }
         catch (Exception e){

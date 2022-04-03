@@ -14,7 +14,6 @@ import steam.microsocial.Repository.RepositorySocialCustom;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Service
 public class ServiceSocialImpl implements ServiceSocial {
@@ -69,22 +68,24 @@ public class ServiceSocialImpl implements ServiceSocial {
 
     @Override
     public void deleteMessage(Integer idEnvoyeur,Integer idMessage) throws UnknownEnvoyeurException {
-        // coté envoyeur
         Social social = null;
+        Receveur receveur = null;
         try{
             social =  repositorySocialCustom.getSocialByIdEnvoyeur(idEnvoyeur);
-            repositorySocialCustom.deleteMessageFromSocial(social, idMessage);
-        } catch (UnknownIdMessageException e) {
-        }
-        // coté receveur
-        try {
             Message message = repositoryReceveurCustom.getMessageByIdMessage(social, idMessage);
-            Receveur receveur = repositoryReceveurCustom.getReceveurByIdReceveur(message.getIdMessage());
+            receveur = repositoryReceveurCustom.getReceveurByIdReceveur(message.getIdMessage());
+            repositorySocialCustom.deleteMessageFromSocial(social, idMessage);
             repositoryReceveurCustom.deleteMessageFromReceveur(receveur, idMessage);
-
-        } catch (UnknownIdMessageException e) {
+        }
+        catch (UnknownIdMessageException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void deleteSocial(Integer idSocial) {
+        repositorySocial.deleteByIdSocial(idSocial);
     }
 
 

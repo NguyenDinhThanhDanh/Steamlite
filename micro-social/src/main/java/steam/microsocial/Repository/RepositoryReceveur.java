@@ -8,12 +8,10 @@ import steam.microsocial.Entities.Social;
 import java.util.List;
 
 public interface RepositoryReceveur extends MongoRepository<Receveur, Integer> {
-    @Query(value = "{'idReceveur': ?0}")
+    @Query(value = "{'idReception': ?0}")
     Receveur findByIdReceveur(int id);
 
-    @Query(value = "{'idReceveur': ?0}", delete = true)
+    @Query(value = "{'idReception': ?0}", delete = true)
     void deleteByIdReceveur(int id);
 
-    @Query(value = "{'messages.idMessage': ?0}", delete = true)
-    void deleteByIdMessage(Integer idMessage);
 }

@@ -3,7 +3,7 @@ POST http://localhost:8082/social/message
 Content-Type: application/json
 
 {
-  "receveur": 3,
+  "receveur": 5,
   "envoyeur" : 1,
   "dateChat" : "20/03/2022",
   "message" : "WSHHHH"
@@ -18,4 +18,7 @@ GET http://localhost:8082/social/recevoir
 Content-Type: application/json
 
 ###
-DELETE http://localhost:8082/social/message/3/1
+DELETE http://localhost:8082/social/1
+
+###
+DELETE http://localhost:8082/social/message/1/1

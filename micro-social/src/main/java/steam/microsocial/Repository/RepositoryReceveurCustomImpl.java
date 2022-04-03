@@ -7,9 +7,7 @@ import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Receveur;
 import steam.microsocial.Entities.Social;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,19 +47,27 @@ public class RepositoryReceveurCustomImpl implements RepositoryReceveurCustom{
 
     @Override
     public void deleteMessageFromReceveur(Receveur receveur, Integer idMessage) throws UnknownIdMessageException {
-        Collection<Message> messages = receveur.getMessages();
-        for (Message message : messages){
-            if(message.getIdMessage() == idMessage){
-                repositoryReceveur.deleteByIdMessage(idMessage);
-            }
+        List<Message> messages = receveur.getMessages();
+
+        try {
+
+            List<Message> newListMessage = messages.stream()
+                    .filter(message -> message.getIdMessage() != (idMessage)).collect(Collectors.toList());
+
+            receveur.setMessages(newListMessage);
+            repositoryReceveur.deleteByIdReceveur(receveur.getIdReception());
+            repositoryReceveur.insert(receveur);
+
         }
-        throw new UnknownIdMessageException();
+        catch (Exception e){
+            e.printStackTrace();
+            throw new UnknownIdMessageException();
+        }
     }
 
     @Override
     public Message getMessageByIdMessage(Social social, Integer idMessage) throws UnknownIdMessageException {
         for (Message m : social.getListeMessage()) {
-            System.out.println("idMessage : " + idMessage + " getIdmessage : " + m.getIdMessage());
             if (m.getIdMessage() == idMessage) {
                 return  m;
             }
@@ -79,8 +85,6 @@ public class RepositoryReceveurCustomImpl implements RepositoryReceveurCustom{
             receveurExistant.setMessages(messages);
 
             repositoryReceveur.deleteByIdReceveur(receveur.getIdReception());
-            System.out.println(receveurExistant);
-            System.out.println(receveurExistant.getReceveur());
             repositoryReceveur.insert(receveurExistant);
         }
         catch (Exception e){

@@ -27,9 +27,8 @@ public class ControllerSocial {
      /* HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_Catalogue+"?token="+token)).GET().build();*/
         try{
-            System.out.println("iciiii");
             serviceSocial.sendNewMessage(message);
-            return ResponseEntity.created(URI.create("/social/message/" + message.getIdMessage())).body("Votre message << " + message.getIdMessage() + " >> a bien été envoyé à " + message.getReceveur());
+            return ResponseEntity.created(URI.create("/social/message/" + message.getIdMessage())).body("Votre message a bien été envoyé à " + message.getReceveur());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,5 +89,16 @@ public class ControllerSocial {
         } catch (UnknownEnvoyeurException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("vous n'etes pas connecté");
         }
+    }
+
+    @DeleteMapping(value = "/{idSocial}")
+    public ResponseEntity<String> deleteSocialById(@PathVariable Integer idSocial){
+        try {
+            serviceSocial.deleteSocial(idSocial);
+            return ResponseEntity.created(URI.create("/social/message/" + idSocial)).body("Votre message << " + idSocial + " >> a bien été supprimé");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
