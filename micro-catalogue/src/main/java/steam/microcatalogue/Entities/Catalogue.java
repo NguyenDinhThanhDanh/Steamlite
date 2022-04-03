@@ -7,13 +7,25 @@ public class Catalogue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(unique=true)
     private String nomJeu;
     private String dateJeu;
     private String nomF;
+    private long prixJeu;
+
+    public long getPrixJeu() {
+        return prixJeu;
+    }
+
+    public void setPrixJeu(long prixJeu) {
+        this.prixJeu = prixJeu;
+    }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNomJeu() {

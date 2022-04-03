@@ -1,4 +1,3 @@
-###
 GET http://localhost:8080/catalogue/jeu
 
 ###
@@ -6,9 +5,10 @@ POST http://localhost:8080/catalogue/jeu
 Content-Type: application/json
 
 {
-  "nomJeu" : "Lost Ark",
+  "nomJeu" : "League of Legends",
   "dateJeu" : "18/04/2021",
-  "nomF": "Tripod Studio"
+  "nomF": "Tripod Studio",
+  "prixJeu" : 15.0
 }
 
 ###
@@ -16,26 +16,24 @@ GET http://localhost:8080/catalogue/jeu
 Content-Type: application/json
 
 ###
-PUT http://localhost:8080/catalogue/jeu/1
-Content-Type: application/json
-
-{
-  "nomJeu" : "Lost Ark",
-  "dateJeu" : "25/04/2021",
-  "nomF": "Tripod Studio"
-}
+DELETE http://localhost:8080/catalogue/jeu/5
 
 ###
-GET http://localhost:8080/catalogue/jeu
-
-###
-DELETE http://localhost:8080/catalogue/jeu/2
-
-###
-GET http://localhost:8080/catalogue/jeu/2
+GET http://localhost:8080/catalogue/jeu/3
 
 ###
 GET http://localhost:8080/catalogue/jeu/1
 
 ###
 DELETE http://localhost:8080/catalogue/jeu/1
+
+###
+PUT http://localhost:8080/catalogue/jeu/5
+Content-Type: application/json
+
+{
+  "nomJeu" : "League of legends",
+  "dateJeu" : "18/04/2021",
+  "nomF": "Riot Games",
+  "prixJeu" : 15.0
+}

@@ -9,6 +9,7 @@ import steam.microcatalogue.Exception.CatalogueNullErrorException;
 import steam.microcatalogue.Exception.IdCatalogueUnkownException;
 import steam.microcatalogue.Repository.CatalogueRepository;
 
+import javax.transaction.Transactional;
 import javax.xml.catalog.Catalog;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,11 +28,11 @@ public class CatalogueServiceImpl implements CatalogueService {
 
     @Override
     public Catalogue findById(Integer id) throws IdCatalogueUnkownException {
-        if(!catalogueRepository.existsById(id)){
-            throw new IdCatalogueUnkownException();
+        if(catalogueRepository.existsById(id)){
+            Catalogue c = this.catalogueRepository.findById(id).get();
+            return c;
         }
-        Catalogue c = this.catalogueRepository.findById(id).get();
-        return c;
+        throw new IdCatalogueUnkownException();
     }
 
     @Override
@@ -52,6 +53,7 @@ public class CatalogueServiceImpl implements CatalogueService {
         }
     }
 
+    @Transactional
     @Override
     public void update(Catalogue c, Integer catalogueId) throws CatalogueNullErrorException, CatalogueInexistantException {
         if(!catalogueRepository.existsById(catalogueId)){
@@ -81,12 +83,13 @@ public class CatalogueServiceImpl implements CatalogueService {
         catalogueRepository.save(catalogue);
     }
 
+    @Transactional
     @Override
     public void delete(Integer catalogueId) throws CatalogueInexistantException {
         if(!catalogueRepository.existsById(catalogueId)){
             throw new CatalogueInexistantException();
         }
-        catalogueRepository.delete(catalogueRepository.findById(catalogueId).get());
+        catalogueRepository.deleteCatalogueById(catalogueId);
     }
 
     @Override
