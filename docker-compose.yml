@@ -7,6 +7,20 @@ services:
     ports:
       - "8500:8500"
 
+  gateway:
+    container_name: gateway
+    image: gateway:latest
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_TOOL_OPTIONS=
+        -DCONSUL_HOST=discovery
+    depends_on:
+      - discovery
+
   mysql-kc:
     image: mysql:8.0
     ports:
@@ -48,8 +62,7 @@ services:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ROOT_LOGIN: "root"
     ports:
-      - "3346:3306"
-
+      - "3306:3306"
     volumes:
       - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./data/mysql/client:/var/lib/mysql
