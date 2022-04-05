@@ -19,12 +19,13 @@ public class GatewayApplication {
                 .route(r -> {
                             System.out.println(r);
                             return r.path("/authent/**")
-                                    .filters(f -> f.rewritePath("/authent/(?<remains>.*)", "/${remains}")
+                                    .filters(f -> f.rewritePath("/authent/(?<remains>.*)", "/authent/${remains}")
                                             .preserveHostHeader()
                                     )
-                                    .uri("http://localhost:8080/authent");
+                                    .uri("http://localhost:8081/authent");
                         }
                 )
+
                 .route( r-> {
                             System.out.println(r);
                             return r.path("/catalogue/**")

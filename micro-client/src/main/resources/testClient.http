@@ -1,4 +1,4 @@
-POST localhost:8082/client/inscription/
+POST localhost:8080/client/inscription/
 Content-Type: application/json
 
 { "pseudo": "Yoh",

@@ -29,6 +29,7 @@ services:
       - discovery
 
   mysql-kc:
+    container_name: mysql-kc
     image: mysql:8.0
     ports:
       - "3366:3306"
@@ -40,6 +41,7 @@ services:
       MYSQL_ROOT_PASSWORD: root_password
 
   keycloak:
+    container_name: keycloak
     image: jboss/keycloak:16.1.1
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
@@ -60,20 +62,6 @@ services:
     depends_on:
       - mysql-kc
 
-  mysql-client:
-    container_name: mysql-client
-    image: mysql:8.0
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_ROOT_LOGIN: "root"
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./data/mysql/client:/var/lib/mysql
-
   mysql-catalogue:
     container_name: mysql-catalogue
     image: mysql:8.0
@@ -83,11 +71,88 @@ services:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ROOT_LOGIN: "root"
     ports:
-      - "3307:3306"
+      - "3301:3306"
     volumes:
       - ./bdd/catalogue/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql/catalogue:/var/lib/mysql
+
+  service-catalogue:
+    container_name: service-catalogue
+    image: service-catalogue:latest
+    restart: on-failure
+    build:
+      context: ./micro-catalogue
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_TOOL_OPTIONS=
+      - DCONSUL_HOST=discovery
+    depends_on:
+      - discovery
+      - mysql-catalogue
+    ports:
+      - "8081:8080"
+
+  mysql-client:
+    container_name: mysql-client
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_LOGIN: "root"
+    ports:
+      - "3302:3306"
+    volumes:
+      - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./data/mysql/client:/var/lib/mysql
+
+  service-client:
+    container_name: service-client
+    image: service-client:latest
+    restart: on-failure
+    build:
+      context: ./micro-client
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_TOOL_OPTIONS=
+      - DCONSUL_HOST=discovery
+    depends_on:
+      - discovery
+      - mysql-client
+    ports:
+      - "8082:8080"
+
+  mysql-fournisseur:
+    container_name: mysql-fournisseur
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_LOGIN: "root"
+    ports:
+      - "3303:3306"
+    volumes:
+      - ./bdd/fournisseur/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./bdd/fournisseur/table.sql:/docker-entrypoint-initdb.d/table.sql
+      - ./data/mysql/fournisseur:/var/lib/mysql
+
+  service-fournisseur:
+    container_name: service-fournisseur
+    image: service-fournisseur:latest
+    restart: on-failure
+    build:
+      context: ./micro-fournisseur
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_TOOL_OPTIONS=
+        -DCONSUL_HOST=discovery
+    depends_on:
+      - discovery
+      - mysql-fournisseur
+    ports:
+      - "8083:8080"
 
   mongo-social:
     container_name: mongo-social
@@ -115,38 +180,7 @@ services:
       - discovery
       - mongo-social
     ports:
-      - "6874:8080"
-
-  mysql-fournisseur:
-    container_name: mysql-fournisseur
-    image: mysql:8.0
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_ROOT_LOGIN: "root"
-    ports:
-      - "3309:3306"
-    volumes:
-      - ./bdd/fournisseur/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./bdd/fournisseur/table.sql:/docker-entrypoint-initdb.d/table.sql
-      - ./data/mysql/fournisseur:/var/lib/mysql
-
-  service-fournisseur:
-    container_name: service-fournisseur
-    image: service-fournisseur:latest
-    restart: on-failure
-    build:
-      context: ./micro-fournisseur
-      dockerfile: Dockerfile
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery
-    depends_on:
-      - discovery
-      - mysql-fournisseur
-    ports:
-      - "6873:8080"
+      - "8084:8080"
 
   mongo-vente:
     container_name: mongo-vente
@@ -174,7 +208,7 @@ services:
       - discovery
       - mongo-vente
     ports:
-      - "6875:8080"
+      - "8085:8080"
 
 volumes:
   data:

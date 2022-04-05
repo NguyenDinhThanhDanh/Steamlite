@@ -22,12 +22,12 @@ spring:
           enabled: true
 
       routes:
-        - id: rewritepath_route_authen
+        - id: rewritepath_route_authent
           uri: lb://service-auth
           predicates:
-            - Path=/authen/**
+            - Path=/authent/**
           filters:
-            - RewritePath=/authen(?<segment>/?.*), /authen\{segment}
+            - RewritePath=/authent(?<segment>/?.*), /authent\{segment}
 
         - id: rewritepath_route_catalogue
           uri: lb://micro-catalogue

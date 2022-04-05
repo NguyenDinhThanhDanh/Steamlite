@@ -5,7 +5,7 @@ client_id=steamlite-web&username=admin&password=admin&grant_type=password
 
 
 ###
-POST http://localhost:8081/authent/inscription/
+POST http://localhost:8080/authent/inscription/
 Content-Type: application/json
 
 { "pseudo": "Yoh",
@@ -14,15 +14,15 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8081/authent/inscription/
+POST http://localhost:8080/authent/inscription/
 Content-Type: application/json
 
 { "pseudo": "John",
   "mdp": "gamma2",
-  "email": "John@Doe.com"
+  "email": "John@ahaha.com"
 }
 ###
-POST http://localhost:8081/authent/resetpassword
+POST http://localhost:8080/authent/resetpassword
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
   "mdp": "kali4"
 }
 ###
-POST http://localhost:8081/authent/token/
+POST http://localhost:8080/authent/token/
 Content-Type: application/json
 
 {
