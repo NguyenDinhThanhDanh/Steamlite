@@ -1,8 +1,10 @@
 GET http://localhost:8080/catalogue/jeu
+token: {{auth_token}}
 
 ###
 POST http://localhost:8080/catalogue/jeu
 Content-Type: application/json
+token: {{auth_token}}
 
 {
   "nomJeu" : "League of Legends",
@@ -14,26 +16,32 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/catalogue/jeu
 Content-Type: application/json
-
-###
-DELETE http://localhost:8080/catalogue/jeu/5
-
-###
-GET http://localhost:8080/catalogue/jeu/3
-
-###
-GET http://localhost:8080/catalogue/jeu/1
+token: {{auth_token}}
 
 ###
 DELETE http://localhost:8080/catalogue/jeu/1
+token: {{auth_token}}
 
 ###
-PUT http://localhost:8080/catalogue/jeu/5
-Content-Type: application/json
+GET http://localhost:8080/catalogue/jeu/3
+token: {{auth_token}}
 
-{
-  "nomJeu" : "League of legends",
-  "dateJeu" : "18/04/2021",
-  "nomF": "Riot Games",
-  "prixJeu" : 15.0
-}
+###
+GET http://localhost:8080/catalogue/jeu/1
+token: {{auth_token}}
+
+###
+DELETE http://localhost:8080/catalogue/jeu/1
+token: {{auth_token}}
+
+####
+#PUT http://localhost:8080/catalogue/jeu/1
+#Content-Type: application/json
+#token: {{auth_token}}
+#
+#{
+#  "nomJeu" : "League of runterra",
+#  "dateJeu" : "18/04/2021",
+#  "nomF": "Riot Games",
+#  "prixJeu" : 15.0
+#}

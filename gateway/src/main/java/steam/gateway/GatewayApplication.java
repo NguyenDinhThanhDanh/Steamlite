@@ -33,7 +33,7 @@ public class GatewayApplication {
                                             f.rewritePath("/catalogue/(?<remains>.*)", "/catalogue/${remains}")
                                                     .preserveHostHeader()
                                     )
-                                    .uri("http://localhost:8081/catalogue");
+                                    .uri("http://localhost:8086/catalogue");
                         }
                 )
                 .route( r-> {

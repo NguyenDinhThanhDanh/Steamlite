@@ -26,7 +26,7 @@ public class ControllerVente {
     @Autowired
     private ServiceVente serviceVente;
 
-    private final static String URI_vente= "http://localhost:8080/api/auth/token";
+    private final static String URI_CLIENT= "http://localhost:8080/client/token?token=";
 
     @GetMapping(value = "/")
     public ResponseEntity<Collection<Vente>> listeVentes(@RequestHeader(name="token") String token){
@@ -133,7 +133,7 @@ public class ControllerVente {
     public boolean checkToken(String token){
         HttpClient httpClient = HttpClient.newHttpClient();
         try {
-            HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/client/token?token="+token)).GET().build();
+            HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(URI_CLIENT+token)).GET().build();
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200){
                 return true;
