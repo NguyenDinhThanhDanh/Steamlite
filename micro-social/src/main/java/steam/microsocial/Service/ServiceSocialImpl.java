@@ -2,6 +2,8 @@ package steam.microsocial.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import steam.microcatalogue.Exception.UnknownEnvoyeurException;
+import steam.microcatalogue.Exception.UnknownIdMessageException;
 import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Receveur;
 import steam.microsocial.Entities.Social;
@@ -58,4 +60,33 @@ public class ServiceSocialImpl implements ServiceSocial {
         repositoryReceveur.findAll().forEach(receveurs::add);
         return receveurs;
     }
+
+    @Override
+    public Message getMessageById(Integer idMessage) {
+        return null;
+    }
+
+    @Override
+    public void deleteMessage(Integer idEnvoyeur,Integer idMessage) throws UnknownEnvoyeurException {
+        Social social = null;
+        Receveur receveur = null;
+        try{
+            social =  repositorySocialCustom.getSocialByIdEnvoyeur(idEnvoyeur);
+            Message message = repositoryReceveurCustom.getMessageByIdMessage(social, idMessage);
+            receveur = repositoryReceveurCustom.getReceveurByIdReceveur(message.getIdMessage());
+            repositorySocialCustom.deleteMessageFromSocial(social, idMessage);
+            repositoryReceveurCustom.deleteMessageFromReceveur(receveur, idMessage);
+        }
+        catch (UnknownIdMessageException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void deleteSocial(Integer idSocial) {
+        repositorySocial.deleteByIdSocial(idSocial);
+    }
+
+
 }
