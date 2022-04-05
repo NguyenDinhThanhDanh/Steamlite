@@ -9,7 +9,7 @@ Content-Type: application/json
 
 ###
 
-POST localhost:8081/authent/token/
+POST localhost:8080/authent/token/
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ client.test("Request executed successfully", function() {
 
 ###
 
-POST localhost:8082/client/connexion
+POST localhost:8080/client/connexion
 token: {{auth_token}}
 Content-Type: application/json
 
@@ -49,7 +49,7 @@ client.test("Request executed successfully", function() {
 
 ###
 
-GET localhost:8082/client/token?token={{auth_token}}
+GET localhost:8080/client/token?token={{auth_token}}
 
 > {%
 client.test("Request executed successfully", function() {
