@@ -1,4 +1,5 @@
 GET http://localhost:8080/vente/
+token: {{auth_token}}
 
 ###
 POST http://localhost:8080/vente/

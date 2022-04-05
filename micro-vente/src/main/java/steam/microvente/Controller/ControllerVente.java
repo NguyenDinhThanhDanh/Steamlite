@@ -11,7 +11,11 @@ import steam.microvente.Entities.Vente;
 import steam.microvente.Exception.*;
 import steam.microvente.Service.ServiceVente;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Collection;
 
 @RestController
@@ -24,20 +28,23 @@ public class ControllerVente {
     private final static String URI_vente= "http://localhost:8080/api/auth/token";
 
     @GetMapping(value = "/")
-    public ResponseEntity<Collection<Vente>> listeVentes(){
-        try{
-            Collection<Vente> listeAllVente = serviceVente.getAllVentes();
-            if (listeAllVente.size() == 0){
-                return ResponseEntity.noContent().build();
+    public ResponseEntity<Collection<Vente>> listeVentes(@RequestHeader(name="token") String token){
+        if (checkToken(token)){
+            try{
+                Collection<Vente> listeAllVente = serviceVente.getAllVentes();
+                if (listeAllVente.size() == 0){
+                    return ResponseEntity.noContent().build();
+                }
+                else{
+                    ResponseEntity<Collection<Vente>> responseEntity = ResponseEntity.ok(listeAllVente);
+                    return responseEntity;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            else{
-                ResponseEntity<Collection<Vente>> responseEntity = ResponseEntity.ok(listeAllVente);
-                return responseEntity;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         }
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @GetMapping(value = "/jeu/{id}")
@@ -94,6 +101,24 @@ public class ControllerVente {
             return ResponseEntity.ok().body("Les ventes du jeu " + id + " ont été supprimées");
         } catch (IdGameUnkownException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id de jeu inconnu");
+        }
+    }
+
+    public boolean checkToken(String token){
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/client/token?token="+token)).GET().build();
+        try {
+            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200){
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
         }
     }
 }
