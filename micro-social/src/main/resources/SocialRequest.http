@@ -1,6 +1,7 @@
 ###
 POST http://localhost:8080/social/message
 Content-Type: application/json
+token: {{auth_token}}
 
 {
   "receveur": 5,
@@ -12,13 +13,17 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/social/message
 Content-Type: application/json
+token: {{auth_token}}
 
 ###
 GET http://localhost:8080/social/recevoir
 Content-Type: application/json
+token: {{auth_token}}
 
 ###
 DELETE http://localhost:8080/social/1
+token: {{auth_token}}
 
 ###
 DELETE http://localhost:8080/social/message/1/1
+token: {{auth_token}}
