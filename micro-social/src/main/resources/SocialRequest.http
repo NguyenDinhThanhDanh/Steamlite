@@ -1,5 +1,5 @@
 ###
-POST http://localhost:8082/social/message
+POST http://localhost:8080/social/message
 Content-Type: application/json
 
 {
@@ -10,15 +10,15 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8082/social/message
+GET http://localhost:8080/social/message
 Content-Type: application/json
 
 ###
-GET http://localhost:8082/social/recevoir
+GET http://localhost:8080/social/recevoir
 Content-Type: application/json
 
 ###
-DELETE http://localhost:8082/social/1
+DELETE http://localhost:8080/social/1
 
 ###
-DELETE http://localhost:8082/social/message/1/1
+DELETE http://localhost:8080/social/message/1/1
