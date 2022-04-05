@@ -1,0 +1,59 @@
+POST localhost:8082/client/inscription/
+Content-Type: application/json
+
+{ "pseudo": "Yoh",
+  "mdp": "kali4",
+  "dateInscrit": "12-03-2021",
+  "email": "John@Doe.com"
+}
+
+###
+
+POST localhost:8081/authent/token/
+Content-Type: application/json
+
+{
+  "pseudo": "yoh",
+  "mdp": "kali4"
+}
+
+> {%
+client.global.set("auth_token", response.headers.valueOf("token"));
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Le token aurait dû être créé");
+});
+%}
+
+###
+
+POST localhost:8082/client/connexion
+token: {{auth_token}}
+Content-Type: application/json
+
+{
+  "pseudo": "yoh",
+  "mdp": "kali4"
+}
+
+
+###
+
+GET localhost:8082/client/token?token=rezarzerar
+
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 404, "Le token aurait dû être valide");
+});
+%}
+
+###
+
+GET localhost:8082/client/token?token={{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Le token aurait dû être valide");
+});
+%}
+###

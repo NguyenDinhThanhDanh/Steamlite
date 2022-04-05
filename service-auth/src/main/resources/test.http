@@ -1,75 +1,41 @@
-POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
+POST http://localhost:8000/auth/realms/steam/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
 
-> {%
-client.test("Request executed successfully", function() {
-client.assert(response.status === 200, "Le compte n'a pas été créé");
-});
-%}
-###
+client_id=steamlite-web&username=admin&password=admin&grant_type=password
 
-POST localhost:8081/authent/inscription?pseudo=dad&mdp=dad
-
-> {%
-client.test("Request executed successfully", function() {
-client.assert(response.status === 200, "Le compte n'a pas été créé");
-});
-%}
-###
-
-POST localhost:8081/authent/inscription?pseudo=zed&mdp=zed
-
-> {%
-client.test("Request executed successfully", function() {
-  client.assert(response.status === 409, "Il y aurait du y avoir un conflit");
-});
-%}
-###
-
-POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
-
-> {%
-client.test("Request executed successfully", function() {
-client.assert(response.status === 200, "Connection");
-});
-%}
 
 ###
+POST http://localhost:8081/authent/inscription/
+Content-Type: application/json
 
-POST localhost:8081/authent/connexion?pseudo=zed&mdp=zed
-
-> {%
-client.test("Request executed successfully", function() {
-  client.assert(response.status === 409, "Il y aurait du y avoir un conflit");
-});
-%}
-
-###
-
-POST localhost:8081/authent/token?pseudo=zed&mdp=zed
-
-> {%
-client.global.set("auth_token", response.headers.valueOf("auth_token"));
-client.test("Request executed successfully", function() {
-  client.assert(response.status === 200, "Le token aurait dû être créé");
-});
-%}
-###
-GET localhost:8081/authent/token?token={{auth_token}}
-
-
-> {%
-client.test("Request executed successfully", function() {
-  client.assert(response.status === 200, "Le token aurait dû être valide");
-});
-%}
-###
-GET localhost:8081/authent/token?token=rezarzerar
-
-
-> {%
-client.test("Request executed successfully", function() {
-  client.assert(response.status === 404, "Le token aurait dû être valide");
-});
-%}
+{ "pseudo": "Yoh",
+  "mdp": "kali4",
+  "email": "John@Doe.com"
+}
 
 ###
+POST http://localhost:8081/authent/inscription/
+Content-Type: application/json
+
+{ "pseudo": "John",
+  "mdp": "gamma2",
+  "email": "John@Doe.com"
+}
+###
+POST http://localhost:8081/authent/resetpassword
+Content-Type: application/json
+
+{
+  "pseudo": "yoh",
+  "mdp": "kali4"
+}
+###
+POST http://localhost:8081/authent/token/
+Content-Type: application/json
+
+{
+  "pseudo": "yoh",
+  "mdp": "kali4"
+}
+###
+
