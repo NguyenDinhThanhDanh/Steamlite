@@ -7,6 +7,13 @@ services:
     ports:
       - "8500:8500"
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   gateway:
     container_name: gateway
     image: gateway:latest
@@ -67,22 +74,6 @@ services:
       - ./bdd/client/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./data/mysql/client:/var/lib/mysql
 
-  service-client:
-    container_name: service-client
-    image: service-client:latest
-    restart: on-failure
-    build:
-      context: ./micro-client
-      dockerfile: Dockerfile
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery
-    depends_on:
-      - discovery
-      - mysql-client
-    ports:
-      - "6872:8080"
-
   mysql-catalogue:
     container_name: mysql-catalogue
     image: mysql:8.0
@@ -97,22 +88,6 @@ services:
       - ./bdd/catalogue/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql/catalogue:/var/lib/mysql
-
-  service-catalogue:
-    container_name: service-catalogue
-    image: service-catalogue:latest
-    restart: on-failure
-    build:
-      context: ./micro-catalogue
-      dockerfile: Dockerfile
-    environment:
-      - JAVA_TOOL_OPTIONS=
-        -DCONSUL_HOST=discovery
-    depends_on:
-      - discovery
-      - mysql-catalogue
-    ports:
-      - "6871:8080"
 
   mongo-social:
     container_name: mongo-social
