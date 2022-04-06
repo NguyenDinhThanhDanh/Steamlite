@@ -9,6 +9,9 @@ token: {{auth_token}}
   "dateChat" : "20/03/2022",
   "message" : "WSHHHH"
 }
+####
+GET http://localhost:8080/fournisseur/fournisseurs
+token: {{auth_token}}
 
 ###
 GET http://localhost:8080/social/message

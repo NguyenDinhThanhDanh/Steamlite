@@ -1,5 +1,6 @@
 using micro_fournisseur.Repositories;
 using micro_fournisseur.Services;
+using micro_fournisseur.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
