@@ -37,7 +37,7 @@ Content-Type: application/json
 
 ###
 
-GET localhost:8082/client/token?token=rezarzerar
+GET localhost:8080/client/token?token=rezarzerar
 
 
 > {%
@@ -56,3 +56,17 @@ client.test("Request executed successfully", function() {
 });
 %}
 ###
+
+DELETE localhost:8080/client/desinscription/1
+Content-Type: application/json
+
+{
+  "mdp": "kali4"
+}
+
+###
+
+GET localhost:8080/client/consulter/
+
+
+

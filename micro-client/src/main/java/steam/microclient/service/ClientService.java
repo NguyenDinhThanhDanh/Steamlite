@@ -14,6 +14,7 @@ public interface ClientService {
     String checkToken(String token) throws MauvaisTokenException;
     Client connexion(String pseudo,String mdp,String token) throws UtilisateurPasInscritException;
     void deconnexion(Client client) throws OperationNonAutorisee;
-
+    void desinscription(int id,String mdp) throws MauvaisMdpException;
     Client getClientById(int idC);
+    String getToken(String pseudo);
 }

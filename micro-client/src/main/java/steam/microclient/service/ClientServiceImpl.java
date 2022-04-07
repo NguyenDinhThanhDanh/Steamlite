@@ -13,9 +13,7 @@ import steam.microclient.repository.ClientRepository;
 import javax.print.attribute.standard.Media;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 @Service
 public class ClientServiceImpl implements   ClientService{
@@ -113,7 +111,35 @@ public class ClientServiceImpl implements   ClientService{
     }
 
     @Override
+    public void desinscription(int id, String mdp) throws MauvaisMdpException {
+        Client client=getClientById(id);
+        if(!client.getMdp().equals(mdp)){
+            throw new MauvaisMdpException();
+        }else{
+            this.clientRepository.deleteById(id);
+        }
+    }
+
+    @Override
     public Client getClientById(int idC) {
         return this.clientRepository.findById(idC).get();
     }
+
+    @Override
+    public String getToken(String pseudo) {
+        Client client = getUserByPseudo(pseudo);
+        String token=getKeyByValue(clientsConnectes,client);
+        return token;
+    }
+
+    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+        for (Map.Entry<T, E> entry : map.entrySet()) {
+            if (Objects.equals(value, entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
 }
