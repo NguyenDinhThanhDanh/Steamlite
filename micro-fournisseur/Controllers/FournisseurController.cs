@@ -6,8 +6,11 @@ using micro_fournisseur.Exceptions;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
+
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace micro_fournisseur.Controllers
 {
@@ -17,67 +20,92 @@ namespace micro_fournisseur.Controllers
     {
         private IFournisseurService ? FournisseurService { get; set; }
 
+        private HttpClient _CLIENT;
+        private JsonSerializerOptions _options;
+        private string URI;
         public FournisseurController(IFournisseurService fournisseurService)
         {
             FournisseurService = fournisseurService;
+            _CLIENT = new HttpClient();
+            URI =  "http://localhost:8080/catalogue/jeu/";
+            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
         [HttpGet("fournisseur/jeu/{id}")]
-        public IActionResult GetJeu(string id)
+        public Jeu GetJeu([FromHeader] string token, string id)
         {
-            //var product = FournisseurService.G(id);
             if (id == null)
             {
-                return NotFound();
+                return null;
             }
-
-            return Ok();
-        }
-
-        [HttpGet("fournisseur/jeuById/{id}", Name = "GetJeuById")]
-        public IActionResult GetJeuById(string id)
-        {
-            //var product = FournisseurService.G(id);
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("fournisseur/jeuByName/{nameJ}", Name = "GetJeuByName")]
-        public IActionResult GetJeuByName(string id)
-        {
-            //var product = FournisseurService.G(id);
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            return Ok();
+            SetHeader(token);
+            var response = _CLIENT.GetAsync(URI + id);
+            var content = response.Result.Content.ReadAsStringAsync();
+            Jeu jeu = JsonConvert.DeserializeObject<Jeu>(content.Result);
+            return jeu;
         }
 
         // Get jeu/
         [HttpGet("fournisseur/jeux")]
-        public List<Jeu> GetAllJeux()
+        public List<Jeu> GetAllJeux([FromHeader] string token)
         {
-            return FournisseurService.GetJeux();
+            SetHeader(token);
+            var response = _CLIENT.GetAsync(URI);
+            var content = response.Result.Content.ReadAsStringAsync();
+            Console.WriteLine(content.Result);
+            return JsonConvert.DeserializeObject<List<Jeu>>(content.Result);
         }
 
         // POST /jeu/
         [HttpPost("fournisseur/jeu")]
-        public IActionResult AjouterJeu([FromBody] Jeu jeu)
+        public IActionResult AjouterJeu([FromBody] Jeu jeu, [FromHeader] string token)
         {
-            var result = FournisseurService.AjouterJeu(jeu);
-            return Created(Url.RouteUrl("GetJeuById", new { id = result.IdJeu }), result);
+            SetHeader(token);
+            var values = new Dictionary<string, string>
+            {
+                { "nomJeu", jeu.NomJeu },
+                { "dateJeu", jeu.DateJeu },
+                { "nomF", jeu.nomF },
+                { "prixJeu", jeu.prixJeu }
+            };
+
+            var dico = JsonConvert.SerializeObject( values );
+
+            StringContent httpContent = new StringContent(dico, System.Text.Encoding.UTF8, "application/json");
+
+            var response = _CLIENT.PostAsync("http://localhost:8080/catalogue/jeu", httpContent);
+            //Console.WriteLine(response.Result.StatusCode.ToString());
+            //Console.WriteLine(response.Result.Content.ReadAsStringAsync().Result);
+        
+            if (response.Result.IsSuccessStatusCode)
+            {
+                var content = response.Result.Content.ReadAsStringAsync();
+                string location = response.Result.Headers.Location.ToString().Split("/")[3];
+                
+                return Ok(response.Result.Content.ReadAsStringAsync().Result);
+            }
+            if(response.Result.StatusCode.ToString().Equals("Conflict")){
+                return Conflict(response.Result.Content.ReadAsStringAsync().Result);
+            }
+            return StatusCode(500, "Internal error");
         }
 
         [HttpDelete("fournisseur/jeu/{id}")]
-        public IActionResult DeleteJeu(string id)
+        public IActionResult DeleteJeu([FromHeader] string token, string id)
         {
-            FournisseurService.DeleteJeu(id);
-            return Ok();
+            SetHeader(token);
+            var response = _CLIENT.DeleteAsync("http://localhost:8080/catalogue/jeu/" + id);
+            Console.WriteLine(response.Result.Content);
+            if (response.Result.IsSuccessStatusCode)
+            {
+                var content = response.Result.Content.ReadAsStringAsync();
+                
+                return Ok(response.Result.Content.ReadAsStringAsync().Result);
+            }
+            if(response.Result.StatusCode.ToString().Equals("NotFound")){
+                return NotFound(response.Result.Content.ReadAsStringAsync().Result);
+            }
+            return StatusCode(500, "Internal error");
         }
 
 
@@ -168,5 +196,12 @@ namespace micro_fournisseur.Controllers
             }
             return response.Result.IsSuccessStatusCode;
         }
+
+        private void SetHeader(string token)
+        {
+            _CLIENT.DefaultRequestHeaders.Add("token",token);
+            Response.Headers.Add("token", new string[] { token });
+        }
+
     }
 }

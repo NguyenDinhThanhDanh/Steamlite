@@ -31,8 +31,9 @@ namespace micro_fournisseur.Services
         }
 
         public Jeu AjouterJeu(Jeu jeu){
-            JeuRepository.SaveJeu(jeu);
-            return jeu;
+            //JeuRepository.SaveJeu(jeu);
+            //return jeu;
+            return null;
         }
 
         public List<Jeu> GetJeuxFournisseur(string NomFournisseur){
@@ -61,12 +62,14 @@ namespace micro_fournisseur.Services
 
         public Jeu ? GetJeuById(string id)
         {
-            return JeuRepository.GetById(id);
+            //return JeuRepository.GetById(id);
+            return null;
         }
 
         public void DeleteJeu(string IdJeu)
         {
-            JeuRepository.DeleteJeu(IdJeu);
+            //JeuRepository.DeleteJeu(IdJeu);
+            
         }
 
         public void DeleteFournisseur(string IdFournisseur)

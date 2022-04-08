@@ -7,7 +7,7 @@ namespace micro_fournisseur.Repositories
     public class JeuRepository : IJeuRepository
     {
 
-        private MySqlConnection ? mySql { get; set; }
+        /*private MySqlConnection ? mySql { get; set; }
 
         public JeuRepository(IConfiguration configuration)
         {
@@ -22,6 +22,7 @@ namespace micro_fournisseur.Repositories
         }
         public Jeu ? GetById(string id)
         {
+        /*{
             try
             {
                 mySql.Open();
@@ -37,10 +38,11 @@ namespace micro_fournisseur.Repositories
                     {  
                         return new Jeu()  
                         {  
-                            IdJeu = reader["idF"].ToString(),
+                            id = reader["idF"].ToString(),
                             NomJeu= reader["nomF"].ToString(),
-                            NomFournisseur = reader["mdpF"].ToString(),
+                            nomF = reader["mdpF"].ToString(),
                             DateJeu = reader["dateInscriptionF"].ToString()
+                            prixJeu = reader["dateInscriptionF"].ToString()
                         };
                     }  
                 }
@@ -63,10 +65,12 @@ namespace micro_fournisseur.Repositories
                 return;
             }
             //Ctx.FindOneAndReplace(Builders<Product>.Filter.Eq("Id", product.Id), product);
+
+            return null;
         }
         public void DeleteJeu(string idJ)
         {
-            
         }
+    */
     }
 }
