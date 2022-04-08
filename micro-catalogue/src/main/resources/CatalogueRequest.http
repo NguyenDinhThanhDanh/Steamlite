@@ -7,9 +7,9 @@ Content-Type: application/json
 token: {{auth_token}}
 
 {
-  "nomJeu" : "League of Legends",
+  "nomJeu" : "CSS",
   "dateJeu" : "18/04/2021",
-  "nomF": "Tripod Studio",
+  "nomF": "Valve",
   "prixJeu" : 15.0
 }
 

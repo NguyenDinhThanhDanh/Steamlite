@@ -76,7 +76,7 @@ public class ControlleurCatalogue {
                 catalogueDAO.delete(Integer.valueOf(id));
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body("le jeu d'id" + id + " a été supprimé du catalogue de jeu");
             } catch (CatalogueInexistantException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("le catalogue passé est incorrect ou n'existe pas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("le catalogue passé est incorrect ou n'existe pas");
             }
         }
         else{
@@ -92,9 +92,8 @@ public class ControlleurCatalogue {
                 ResponseEntity<Catalogue> responseEntity = ResponseEntity.ok(c);
                 return responseEntity;
             } catch (IdCatalogueUnkownException e) {
-                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         }
         else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
