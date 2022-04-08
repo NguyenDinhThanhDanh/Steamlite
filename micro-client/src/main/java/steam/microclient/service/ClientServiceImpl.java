@@ -2,6 +2,7 @@ package steam.microclient.service;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,11 @@ public class ClientServiceImpl implements   ClientService{
     //private final static String URI_TOKEN_KEYCLOAK="http://localhost:8081/authent/token/";
 
     private HashMap<String, Client> clientsConnectes;
-
+    private HashMap<String,String> ValuetoKey;
     public ClientServiceImpl() {
 
         this.clientsConnectes = new HashMap<>();
+        this.ValuetoKey= new HashMap<>();
     }
 
 
@@ -93,6 +95,7 @@ public class ClientServiceImpl implements   ClientService{
         if(this.verifUser(client.getPseudo(),client.getMdp())){
             if(!this.clientsConnectes.containsKey(token)){
                 this.clientsConnectes.put(token,client);
+                this.ValuetoKey.put(client.toString(),token);
             }
         }
         System.out.println(clientsConnectes.toString());
@@ -128,18 +131,21 @@ public class ClientServiceImpl implements   ClientService{
     @Override
     public String getToken(String pseudo) {
         Client client = getUserByPseudo(pseudo);
-        String token=getKeyByValue(clientsConnectes,client);
+        System.out.println(client.toString());
+        String token = ValuetoKey.get(client.toString());
+        System.out.println(token);
         return token;
     }
 
-    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-        for (Map.Entry<T, E> entry : map.entrySet()) {
-            if (Objects.equals(value, entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
+//    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+//        for (Map.Entry<T, E> entry : map.entrySet()) {
+//            if (Objects.equals(value, entry.getValue())) {
+//                return entry.getKey();
+//            }
+//        }
+//        return null;
+//    }
+
 
 
 }

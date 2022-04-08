@@ -81,6 +81,7 @@ public class ClientController {
     public ResponseEntity<String> consultation(@PathVariable String pseudo) throws IOException, InterruptedException {
         HttpHeaders header= new HttpHeaders();
         String token= clientService.getToken(pseudo);
+
         header.setBearerAuth(token);
         HttpClient httpClient=HttpClient.newHttpClient();
         HttpRequest httpRequest=HttpRequest.newBuilder().uri(URI.create(URI_CATA)).header("token",token).GET().build();
@@ -113,7 +114,7 @@ public class ClientController {
     }
 
     @PostMapping(value="/conversation/")
-    public ResponseEntity<String> converation(){
+    public ResponseEntity<String> conversation(){
 
        return null;
     }
