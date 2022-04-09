@@ -73,7 +73,6 @@ GET localhost:8080/client/consultation/Yoh
 GET localhost:8080/client/listJeux/1
 
 ###
-
 POST localhost:8080/client/achat/
 Content-Type: application/json
 
@@ -83,3 +82,6 @@ Content-Type: application/json
   "prixAchat": "15.0",
   "dateAchat": "19/04/2022"
 }
+
+###
+POST localhost:8080/client/tchat/

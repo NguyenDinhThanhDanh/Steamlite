@@ -20,4 +20,8 @@ public interface ServiceSocial {
     void deleteMessage(Integer idEnvoyeur,Integer idMessage) throws UnknownEnvoyeurException, UnknownIdMessageException;
 
     void deleteSocial(Integer idSocial);
+
+    Social getSocialById(Integer id) throws UnknownEnvoyeurException;
+
+    Collection<Message> getSocialByIdWithId(Integer id, Integer id2) throws UnknownEnvoyeurException;
 }

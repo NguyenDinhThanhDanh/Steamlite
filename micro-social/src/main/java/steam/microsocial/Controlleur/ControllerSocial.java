@@ -46,16 +46,32 @@ public class ControllerSocial {
     }
 
     @GetMapping(value = "/message/{id}")
-    public ResponseEntity<Collection<Social>> getMessageJoueurEnvoye(@PathVariable int id, @RequestHeader(name="token") String token){
+    public ResponseEntity<Social> getMessageJoueurEnvoye(@PathVariable int id, @RequestHeader(name="token") String token){
         if (checkToken(token)){
             try{
-                Collection<Social> social = serviceSocial.getSocialAll();
-                ResponseEntity<Collection<Social>> responseEntity = ResponseEntity.ok(social);
+                Social social = serviceSocial.getSocialById(id);
+                ResponseEntity<Social> responseEntity = ResponseEntity.ok(social);
                 return responseEntity;
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @GetMapping(value = "/message/{id}/{id2}")
+    public ResponseEntity<Collection<Message>> getMessagesJoueurToJoueur(@PathVariable int id, @PathVariable int id2, @RequestHeader(name="token") String token){
+        if (checkToken(token)){
+            try{
+                Collection<Message> messages = serviceSocial.getSocialByIdWithId(id, id2);
+                ResponseEntity<Collection<Message>> responseEntity = ResponseEntity.ok(messages);
+                return responseEntity;
+            } catch (UnknownEnvoyeurException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
         }
         else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
