@@ -24,4 +24,6 @@ public interface ServiceSocial {
     Social getSocialById(Integer id) throws UnknownEnvoyeurException;
 
     Collection<Message> getSocialByIdWithId(Integer id, Integer id2) throws UnknownEnvoyeurException;
+
+    Collection<Social> getByIdEnvoyeur(Integer id);
 }

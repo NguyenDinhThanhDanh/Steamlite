@@ -23,6 +23,7 @@ public class ClientController {
     ClientServiceImpl clientService;
     private final static String URI_CATA="http://localhost:8080/catalogue/jeu/";
     private final static String URI_VENTE="http://localhost:8080/vente/client/";
+    private final static String URI_SOCIAL="http://localhost:8080/social/message";
     @PostMapping(value="/inscription")
     public ResponseEntity<String> inscription(@RequestBody Client client) {
         try {
@@ -147,8 +148,53 @@ public class ClientController {
         }
     }
 
-    @PostMapping(value="/conversation/")
-    public ResponseEntity<String> conversation(){
+    @PostMapping(value="/tchat/")
+    public ResponseEntity<String> tchatEnvoyer(@RequestBody Map<String,String> bodyMessage){
+        String receveur = bodyMessage.get("receveur");
+        String envoyeur = bodyMessage.get("envoyeur");
+        String dateChat = bodyMessage.get("dateChat");
+        String message = bodyMessage.get("message");
+        System.out.println(receveur + " "+ envoyeur+ " " + dateChat+ " " + message);
+
+        String token = clientService.getToken(clientService.getClientById(Integer.parseInt(envoyeur)).getPseudo());
+        System.out.println(token);
+
+        JSONObject json = new JSONObject();
+        json.put("receveur",receveur);
+        json.put("envoyeur",envoyeur);
+        json.put("dateChat",dateChat);
+        json.put("message",message);
+        System.out.println(json);
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URI_SOCIAL))
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .header("token", token)
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            System.out.println(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body( receveur + " a bien envoyé le message " + message + " à " + receveur);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("La requete n'est pas bonne");
+        } catch (InterruptedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Une erreure est servenue");
+        }
+    }
+
+    @GetMapping(value="/tchat/{id}")
+    public ResponseEntity<String> tchatRecevoir(){
+
+        return null;
+    }
+
+    @GetMapping(value="/tchat/{id}/{id2}")
+    public ResponseEntity<String> tchatRecevoirEchange(){
 
         return null;
     }

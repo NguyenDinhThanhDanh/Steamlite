@@ -46,11 +46,12 @@ public class ControllerSocial {
     }
 
     @GetMapping(value = "/message/{id}")
-    public ResponseEntity<Social> getMessageJoueurEnvoye(@PathVariable int id, @RequestHeader(name="token") String token){
+    public ResponseEntity<Collection<Social>> getMessageJoueurEnvoye(@PathVariable int id, @RequestHeader(name="token") String token){
         if (checkToken(token)){
             try{
-                Social social = serviceSocial.getSocialById(id);
-                ResponseEntity<Social> responseEntity = ResponseEntity.ok(social);
+                Collection<Social> social = serviceSocial.getByIdEnvoyeur(id);
+                System.out.println(social.size());
+                ResponseEntity<Collection<Social>> responseEntity = ResponseEntity.ok(social);
                 return responseEntity;
             } catch (Exception e) {
                 e.printStackTrace();

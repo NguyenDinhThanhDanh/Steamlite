@@ -84,4 +84,13 @@ Content-Type: application/json
 }
 
 ###
-POST localhost:8080/client/tchat/
+###
+POST http://localhost:8080/client/tchat/
+Content-Type: application/json
+
+{
+  "receveur": 5,
+  "envoyeur" : 1,
+  "dateChat" : "20/03/2022",
+  "message" : "kjgsdfkjgdxf"
+}

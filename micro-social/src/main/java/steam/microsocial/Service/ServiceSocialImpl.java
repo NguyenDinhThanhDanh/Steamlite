@@ -37,13 +37,11 @@ public class ServiceSocialImpl implements ServiceSocial {
 
         //vérification de l'existence du social
         Social monSocial = repositorySocialCustom.getSocialByJoueur(message);
-
         // création du social en fonction de son existence
         repositorySocialCustom.save(monSocial);
 
         //Vérification de l'existence du receveur en base
         Receveur receveur = repositoryReceveurCustom.getReceveurByMessage(message);
-
         //création du receveur en fonction de son existence
         repositoryReceveurCustom.save(receveur);
     }
@@ -109,5 +107,10 @@ public class ServiceSocialImpl implements ServiceSocial {
             throw new UnknownEnvoyeurException();
         }
         return messages;
+    }
+
+    @Override
+    public Collection<Social> getByIdEnvoyeur(Integer id) {
+        return repositorySocial.getByIdEnvoyeur(id);
     }
 }
