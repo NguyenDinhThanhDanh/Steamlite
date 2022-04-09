@@ -12,12 +12,19 @@ import steam.microclient.entities.Client;
 import steam.microclient.exceptions.*;
 import steam.microclient.service.ClientServiceImpl;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import java.io.IOException;
+import java.net.Authenticator;
+import java.net.CookieHandler;
+import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.http.HttpMethod.POST;
 
@@ -28,6 +35,7 @@ public class ClientController {
     ClientServiceImpl clientService;
     private final static String URI_CATA="http://localhost:8080/catalogue/jeu/";
     private final static String URI_VENTE="http://localhost:8080/vente/client/";
+    private final static String URI_VENTE_ACHAT="http://localhost:8080/vente/";
     @PostMapping(value="/inscription")
     public ResponseEntity<String> inscription(@RequestBody Client client) {
         try {
@@ -110,7 +118,7 @@ public class ClientController {
     }
 
     @PostMapping(value="/achat/")
-    public ResponseEntity<String> achatJeux(@RequestBody Map<String,String> bodyJeux){
+    public ResponseEntity<String> achatJeux(@RequestBody Map<String,String> bodyJeux) throws IOException, InterruptedException {
         String idClient=bodyJeux.get("idClient");
         String idJeu=bodyJeux.get("idJeu");
         String prixAchat=bodyJeux.get("prixAchat");
@@ -121,7 +129,9 @@ public class ClientController {
         String token= clientService.getToken(pseudo);
         header.setContentType(MediaType.APPLICATION_JSON);
         header.setBearerAuth(token);
+        System.out.println(client.toString());
         RestTemplate restTemplate= new RestTemplate();
+        HttpClient httpClient=HttpClient.newHttpClient();
         JSONObject json=new JSONObject();
         json.put("idJeu",idJeu);
         json.put("idClient",idClient);
@@ -129,7 +139,12 @@ public class ClientController {
         json.put("dateAchat",dateAchat);
         System.out.println(json);
         HttpEntity<String> requestEntity= new HttpEntity<>(json.toString(),header);
-        ResponseEntity<String> res=restTemplate.exchange("http://localhost:8080/vente/",POST,requestEntity,String.class);
+        //HttpRequest httpRequest=HttpRequest.newBuilder().uri(URI.create(URI_VENTE_ACHAT)).header("token",token).POST((HttpRequest.BodyPublisher) requestEntity).build();
+        //HttpResponse<String> res= httpClient.send(httpRequest,HttpResponse.BodyHandlers.ofString());
+
+
+        ResponseEntity<String> res=restTemplate.exchange(URI_VENTE_ACHAT,POST,requestEntity,String.class);
+        System.out.println(res.toString());
         return ResponseEntity.ok().body(res.getBody().toString());
     }
 
@@ -138,5 +153,7 @@ public class ClientController {
 
        return null;
     }
+
+
 
 }

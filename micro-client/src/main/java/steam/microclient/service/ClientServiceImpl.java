@@ -96,9 +96,11 @@ public class ClientServiceImpl implements   ClientService{
             if(!this.clientsConnectes.containsKey(token)){
                 this.clientsConnectes.put(token,client);
                 this.ValuetoKey.put(client.toString(),token);
+
             }
+            System.out.println(ValuetoKey.toString());
         }
-        System.out.println(clientsConnectes.toString());
+
         return client;
 
     }
