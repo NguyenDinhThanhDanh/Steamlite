@@ -69,4 +69,18 @@ Content-Type: application/json
 GET localhost:8080/client/consultation/Yoh
 
 
+###
+GET localhost:8080/client/listJeux/2
 
+###
+
+POST localhost:8080/client/achat/
+token:{{auth_token}}
+Content-Type: application/json
+
+{
+  "idJeu" : "6",
+  "idClient" : "2",
+  "prixAchat": "15.0",
+  "dateAchat": "19/04/2022"
+}

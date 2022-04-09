@@ -1,6 +1,6 @@
 package steam.microclient.service;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -136,6 +136,12 @@ public class ClientServiceImpl implements   ClientService{
         System.out.println(token);
         return token;
     }
+
+    @Override
+    public String execAchat(int idClient, String idJeu, String dateAchat, int prixAchat) {
+        return null;
+    }
+
 
 //    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
 //        for (Map.Entry<T, E> entry : map.entrySet()) {

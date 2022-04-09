@@ -17,4 +17,5 @@ public interface ClientService {
     void desinscription(int id,String mdp) throws MauvaisMdpException;
     Client getClientById(int idC);
     String getToken(String pseudo);
+    String execAchat(int idClient,String idJeu,String dateAchat,int prixAchat);
 }

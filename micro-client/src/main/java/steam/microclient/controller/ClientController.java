@@ -1,10 +1,12 @@
 package steam.microclient.controller;
 
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import steam.microcatalogue.Entities.Catalogue;
 import steam.microclient.entities.Client;
 import steam.microclient.exceptions.*;
@@ -17,13 +19,15 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
+import static org.springframework.http.HttpMethod.POST;
+
 @RestController
 @RequestMapping(value="client")
 public class ClientController {
     @Autowired
     ClientServiceImpl clientService;
     private final static String URI_CATA="http://localhost:8080/catalogue/jeu/";
-    private final static String URI_VENTE="http://localhost:8080/vente/";
+    private final static String URI_VENTE="http://localhost:8080/vente/client/";
     @PostMapping(value="/inscription")
     public ResponseEntity<String> inscription(@RequestBody Client client) {
         try {
@@ -92,7 +96,7 @@ public class ClientController {
     }
 
     @GetMapping(value="/listJeux/{id}")
-    public ResponseEntity<String> consultListJeux(@RequestParam int id) throws IOException, InterruptedException {
+    public ResponseEntity<String> consultListJeux(@PathVariable int id) throws IOException, InterruptedException {
         Client client= clientService.getClientById(id);
         String pseudo=client.getPseudo();
         HttpHeaders header= new HttpHeaders();
@@ -107,10 +111,26 @@ public class ClientController {
 
     @PostMapping(value="/achat/")
     public ResponseEntity<String> achatJeux(@RequestBody Map<String,String> bodyJeux){
-
-
-
-        return null;
+        String idClient=bodyJeux.get("idClient");
+        String idJeu=bodyJeux.get("idJeu");
+        String prixAchat=bodyJeux.get("prixAchat");
+        String dateAchat=bodyJeux.get("dateAchat");
+        Client client= clientService.getClientById(Integer.parseInt(idClient));
+        String pseudo=client.getPseudo();
+        HttpHeaders header= new HttpHeaders();
+        String token= clientService.getToken(pseudo);
+        header.setContentType(MediaType.APPLICATION_JSON);
+        header.setBearerAuth(token);
+        RestTemplate restTemplate= new RestTemplate();
+        JSONObject json=new JSONObject();
+        json.put("idJeu",idJeu);
+        json.put("idClient",idClient);
+        json.put("prixAchat",prixAchat);
+        json.put("dateAchat",dateAchat);
+        System.out.println(json);
+        HttpEntity<String> requestEntity= new HttpEntity<>(json.toString(),header);
+        ResponseEntity<String> res=restTemplate.exchange("http://localhost:8080/vente/",POST,requestEntity,String.class);
+        return ResponseEntity.ok().body(res.getBody().toString());
     }
 
     @PostMapping(value="/conversation/")
