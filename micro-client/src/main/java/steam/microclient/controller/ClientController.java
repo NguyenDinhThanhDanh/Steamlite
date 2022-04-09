@@ -1,32 +1,20 @@
 package steam.microclient.controller;
 
-import net.minidev.json.JSONObject;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import steam.microcatalogue.Entities.Catalogue;
 import steam.microclient.entities.Client;
 import steam.microclient.exceptions.*;
 import steam.microclient.service.ClientServiceImpl;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 import java.io.IOException;
-import java.net.Authenticator;
-import java.net.CookieHandler;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.Map;
-import java.util.Optional;
 
-import static org.springframework.http.HttpMethod.POST;
 
 @RestController
 @RequestMapping(value="client")
@@ -35,7 +23,6 @@ public class ClientController {
     ClientServiceImpl clientService;
     private final static String URI_CATA="http://localhost:8080/catalogue/jeu/";
     private final static String URI_VENTE="http://localhost:8080/vente/client/";
-    private final static String URI_VENTE_ACHAT="http://localhost:8080/vente/";
     @PostMapping(value="/inscription")
     public ResponseEntity<String> inscription(@RequestBody Client client) {
         try {
@@ -69,7 +56,7 @@ public class ClientController {
         }
     }
     @DeleteMapping(value="desinscription/{id}")
-        public ResponseEntity<String> desinscription(@PathVariable int id,@RequestBody Map<String,String> mdp) {
+    public ResponseEntity<String> desinscription(@PathVariable int id,@RequestBody Map<String,String> mdp) {
         try {
             String sMdp=mdp.get("mdp");
             this.clientService.desinscription(id, sMdp);
@@ -111,49 +98,59 @@ public class ClientController {
         String token= clientService.getToken(pseudo);
         header.setBearerAuth(token);
         HttpClient httpClient=HttpClient.newHttpClient();
-        HttpRequest httpRequest=HttpRequest.newBuilder().uri(URI.create(URI_VENTE+id)).header("token",token).GET().build();
-        HttpResponse<String> response= httpClient.send(httpRequest,HttpResponse.BodyHandlers.ofString());
-        return ResponseEntity.ok().body(response.body().toString());
-
+        try {
+            HttpRequest httpRequest=HttpRequest.newBuilder().uri(URI.create(URI_VENTE+id)).header("token",token).GET().build();
+            HttpResponse<String> response= httpClient.send(httpRequest,HttpResponse.BodyHandlers.ofString());
+            return ResponseEntity.ok().body(response.body().toString());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id de client inconnu");
+        }
     }
 
     @PostMapping(value="/achat/")
-    public ResponseEntity<String> achatJeux(@RequestBody Map<String,String> bodyJeux) throws IOException, InterruptedException {
-        String idClient=bodyJeux.get("idClient");
-        String idJeu=bodyJeux.get("idJeu");
-        String prixAchat=bodyJeux.get("prixAchat");
-        String dateAchat=bodyJeux.get("dateAchat");
-        Client client= clientService.getClientById(Integer.parseInt(idClient));
-        String pseudo=client.getPseudo();
-        HttpHeaders header= new HttpHeaders();
-        String token= clientService.getToken(pseudo);
-        header.setContentType(MediaType.APPLICATION_JSON);
-        header.setBearerAuth(token);
-        System.out.println(client.toString());
-        RestTemplate restTemplate= new RestTemplate();
-        HttpClient httpClient=HttpClient.newHttpClient();
-        JSONObject json=new JSONObject();
+    public ResponseEntity<String> achatJeux(@RequestBody Map<String,String> bodyJeux){
+        String idClient = bodyJeux.get("idClient");
+        String idJeu = bodyJeux.get("idJeu");
+        String prixAchat = bodyJeux.get("prixAchat");
+        String dateAchat = bodyJeux.get("dateAchat");
+        System.out.println(idClient + " "+ idJeu+ " " + prixAchat+ " " + dateAchat);
+
+        String token= clientService.getToken(clientService.getClientById(Integer.parseInt(idClient)).getPseudo());
+        System.out.println(token);
+
+        JSONObject json = new JSONObject();
         json.put("idJeu",idJeu);
         json.put("idClient",idClient);
         json.put("prixAchat",prixAchat);
         json.put("dateAchat",dateAchat);
         System.out.println(json);
-        HttpEntity<String> requestEntity= new HttpEntity<>(json.toString(),header);
-        //HttpRequest httpRequest=HttpRequest.newBuilder().uri(URI.create(URI_VENTE_ACHAT)).header("token",token).POST((HttpRequest.BodyPublisher) requestEntity).build();
-        //HttpResponse<String> res= httpClient.send(httpRequest,HttpResponse.BodyHandlers.ofString());
 
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/vente/"))
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .header("token", token)
+                .header("Content-Type", "application/json")
+                .build();
 
-        ResponseEntity<String> res=restTemplate.exchange(URI_VENTE_ACHAT,POST,requestEntity,String.class);
-        System.out.println(res.toString());
-        return ResponseEntity.ok().body(res.getBody().toString());
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            System.out.println(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body( idClient + " a bien acheté le jeu " + idJeu);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("La requete n'est pas bonne");
+        } catch (InterruptedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Une erreure est servenue");
+        }
     }
 
     @PostMapping(value="/conversation/")
     public ResponseEntity<String> conversation(){
 
-       return null;
+        return null;
     }
-
-
 
 }
