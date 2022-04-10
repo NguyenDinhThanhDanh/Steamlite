@@ -5,9 +5,9 @@ token: {{auth_token}}
 
 {
   "receveur": 5,
-  "envoyeur" : 2,
+  "envoyeur" : 1,
   "dateChat" : "20/03/2022",
-  "message" : "WSHHHH"
+  "message" : "Salut ca va ?"
 }
 
 ###

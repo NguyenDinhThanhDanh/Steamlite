@@ -74,7 +74,6 @@ services:
       - "3301:3306"
     volumes:
       - ./bdd/catalogue/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./bdd/catalogue/table.sql:/docker-entrypoint-initdb.d/table.sql
       - ./data/mysql/catalogue:/var/lib/mysql
 
   service-catalogue:
@@ -91,7 +90,7 @@ services:
       - discovery
       - mysql-catalogue
     ports:
-      - "8081:8080"
+      - "8086:8080"
 
   mysql-client:
     container_name: mysql-client

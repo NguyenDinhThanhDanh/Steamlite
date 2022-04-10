@@ -65,9 +65,7 @@ Content-Type: application/json
 }
 
 ###
-
 GET localhost:8080/client/consultation/Yoh
-
 
 ###
 GET localhost:8080/client/listJeux/1
