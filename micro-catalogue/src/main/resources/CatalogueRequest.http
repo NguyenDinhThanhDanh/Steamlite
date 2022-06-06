@@ -28,7 +28,7 @@ token: {{auth_token}}
 
 ###
 GET http://localhost:8080/catalogue/jeu/1
-token: {{auth_token}}
+token: 1
 
 ###
 DELETE http://localhost:8080/catalogue/jeu/1
