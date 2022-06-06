@@ -8,6 +8,7 @@ import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Social;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +24,11 @@ public class RepositorySocialCustomImpl implements RepositorySocialCustom {
     public Social getSocialByJoueur(Message message) {
         List<Social> listeSocial = new ArrayList<>();
         repositorySocial.findAll().forEach(listeSocial::add);
+        List<Message> messagesN = new ArrayList<>();
+        messagesN.add(messagesN.size(), message);
         for(Social s : listeSocial){
             if(s.getEnvoyeur() == message.getEnvoyeur()) {
+                s.setListeMessage(messagesN);
                 return s;
             }
         }
@@ -80,16 +84,20 @@ public class RepositorySocialCustomImpl implements RepositorySocialCustom {
     @Override
     public void save(Social social) {
         try {
-            Social socialExistant = repositorySocial.findByIdSocial(social.getIdSocial()).get(0);
+            Social socialExistant = repositorySocial.getByIdEnvoyeur(social.getIdSocial()).stream().findFirst().get();
             List<Message> messages = socialExistant.getListeMessage();
+            System.out.println(social.getListeMessage().get(0).getMessage());
             social.getListeMessage().get(0).setIdMessage(socialExistant.getListeMessage().size());
-            messages.add(social.getListeMessage().get(0));
+            System.out.println(social.getListeMessage().get(0).getMessage());
+            messages.add(social.getListeMessage().get(social.getListeMessage().size()));
+
             socialExistant.setListeMessage(messages);
 
-            repositorySocial.deleteByIdSocial(social.getIdSocial());
+            repositorySocial.deleteByIdSocial(socialExistant.getIdSocial());
             repositorySocial.insert(socialExistant);
         }
         catch (Exception e){
+            System.out.println("ici");
             repositorySocial.insert(social);
         }
     }

@@ -65,15 +65,12 @@ Content-Type: application/json
 }
 
 ###
-
 GET localhost:8080/client/consultation/Yoh
-
 
 ###
 GET localhost:8080/client/listJeux/1
 
 ###
-
 POST localhost:8080/client/achat/
 Content-Type: application/json
 
@@ -82,4 +79,16 @@ Content-Type: application/json
   "idClient" : "1",
   "prixAchat": "15.0",
   "dateAchat": "19/04/2022"
+}
+
+###
+###
+POST http://localhost:8080/client/tchat/
+Content-Type: application/json
+
+{
+  "receveur": 5,
+  "envoyeur" : 1,
+  "dateChat" : "20/03/2022",
+  "message" : "kjgsdfkjgdxf"
 }

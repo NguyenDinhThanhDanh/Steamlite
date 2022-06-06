@@ -7,22 +7,22 @@ token: {{auth_token}}
 Content-Type: application/json
 
 {
-  "idJeu" : "8",
+  "idJeu" : "2",
   "idClient" : "2",
-  "prixAchat": "30.0",
+  "prixAchat": "10.0",
   "dateAchat": "19/04/2022"
 }
 
 ###
-GET http://localhost:8080/vente/jeu/7
+GET http://localhost:8080/vente/jeu/2
 token: {{auth_token}}
 
 ###
-GET http://localhost:8080/vente/client/2
+GET http://localhost:8080/vente/client/1
 token: {{auth_token}}
 
 ###
-DELETE http://localhost:8080/vente/jeu/3
+DELETE http://localhost:8080/vente/jeu/0
 token: {{auth_token}}
 
 ###

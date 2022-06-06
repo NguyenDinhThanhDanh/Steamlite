@@ -31,6 +31,7 @@ public class ControlleurCatalogue {
     @GetMapping(value = "/jeu")
     public ResponseEntity<Collection<Catalogue>> listeJeu(@RequestHeader(name="token") String token){
         if (checkToken(token)){
+            System.out.println(token);
             try{
                 Collection<Catalogue> listeAllJeu = catalogueDAO.findAll();
                 if (listeAllJeu.size() == 0){

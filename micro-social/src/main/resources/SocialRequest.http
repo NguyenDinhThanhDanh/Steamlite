@@ -7,14 +7,21 @@ token: {{auth_token}}
   "receveur": 5,
   "envoyeur" : 1,
   "dateChat" : "20/03/2022",
-  "message" : "WSHHHH"
+  "message" : "Salut ca va ?"
 }
-####
-GET http://localhost:8080/fournisseur/fournisseurs
-token: {{auth_token}}
 
 ###
 GET http://localhost:8080/social/message
+Content-Type: application/json
+token: {{auth_token}}
+
+###
+GET http://localhost:8080/social/message/1
+Content-Type: application/json
+token: {{auth_token}}
+
+###
+GET http://localhost:8080/social/message/1/5
 Content-Type: application/json
 token: {{auth_token}}
 

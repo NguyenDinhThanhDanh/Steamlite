@@ -14,6 +14,8 @@ import steam.microsocial.Repository.RepositorySocialCustom;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceSocialImpl implements ServiceSocial {
@@ -35,13 +37,11 @@ public class ServiceSocialImpl implements ServiceSocial {
 
         //vérification de l'existence du social
         Social monSocial = repositorySocialCustom.getSocialByJoueur(message);
-
         // création du social en fonction de son existence
         repositorySocialCustom.save(monSocial);
 
         //Vérification de l'existence du receveur en base
         Receveur receveur = repositoryReceveurCustom.getReceveurByMessage(message);
-
         //création du receveur en fonction de son existence
         repositoryReceveurCustom.save(receveur);
     }
@@ -88,5 +88,29 @@ public class ServiceSocialImpl implements ServiceSocial {
         repositorySocial.deleteByIdSocial(idSocial);
     }
 
+    @Override
+    public Social getSocialById(Integer id) throws UnknownEnvoyeurException {
+        try {
+            return repositorySocialCustom.getSocialByIdEnvoyeur(id);
+        } catch (UnknownEnvoyeurException e) {
+            throw new UnknownEnvoyeurException();
+        }
+    }
 
+    @Override
+    public Collection<Message> getSocialByIdWithId(Integer id, Integer id2) throws UnknownEnvoyeurException {
+        Collection<Social> social = repositorySocial.getSocialByIdWithId(id, id2);
+        Collection<Message> messages = new ArrayList<>();
+        messages = social.stream().toList().get(0).getListeMessage();
+        System.out.println(messages);
+        if (messages.isEmpty()){
+            throw new UnknownEnvoyeurException();
+        }
+        return messages;
+    }
+
+    @Override
+    public Collection<Social> getByIdEnvoyeur(Integer id) {
+        return repositorySocial.getByIdEnvoyeur(id);
+    }
 }

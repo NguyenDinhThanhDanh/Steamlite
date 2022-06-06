@@ -6,6 +6,8 @@ import steam.microcatalogue.Exception.UnknownIdMessageException;
 import steam.microsocial.Entities.Message;
 import steam.microsocial.Entities.Social;
 
+import java.util.Collection;
+
 @Repository("RepositorySocialCustom")
 public interface RepositorySocialCustom {
     void save(Social social);
@@ -13,4 +15,5 @@ public interface RepositorySocialCustom {
     Social getSocialByIdEnvoyeur(Integer idEnvoyeur) throws UnknownEnvoyeurException;
 
     void deleteMessageFromSocial(Social social, Integer idMessage) throws UnknownIdMessageException;
+
 }
